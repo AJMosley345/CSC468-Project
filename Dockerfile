@@ -17,4 +17,4 @@ COPY . .
 EXPOSE 8080
 
 # Runs the server.js file
-CMD [ "node", "server.js" ]
+CMD [ "node", "app.js" ]
