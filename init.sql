@@ -1,24 +1,25 @@
-CREATE TABLE Student (
+CREATE TABLE Students (
     student_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(250),
     full_name VARCHAR(250)
 );
-CREATE TABLE Professor (
+CREATE TABLE Professors (
     professor_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(250),
     full_name VARCHAR(250)
 );
-CREATE TABLE Course (
-    class_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    class_name VARCHAR(250)
+CREATE TABLE Courses (
+    course_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    course_number VARCHAR(250),
+    course_name VARCHAR(250)
 );
 
 CREATE TABLE  Student_Course (
     student_id INT NOT NULL,
-    class_id INT NOT NULL,
-    PRIMARY KEY (student_id, class_id),
-    FOREIGN KEY (student_id) REFERENCES Student(student_id),
-    FOREIGN KEY (class_id) REFERENCES Course(class_id)
+    course_id INT NOT NULL,
+    PRIMARY KEY (student_id, course_id),
+    FOREIGN KEY (student_id) REFERENCES Students(student_id),
+    FOREIGN KEY (course_id) REFERENCES Courses(course_id)
 );
 
 INSERT INTO 
@@ -38,12 +39,12 @@ VALUES
     ("TProfessor4","Test Professor4");
 
 INSERT INTO
-    Course (class_name)
+    Course (course_number, course_name)
 VALUES
-    ("TestClass"),
-    ("TestClass2"),
-    ("TestClass3"),
-    ("TestClass4");
+    ("1", "TestClass"),
+    ("1","TestClass2"),
+    ("3","TestClass3"),
+    ("4","TestClass4");
 
 INSERT INTO
     Student_Course (student_id, class_id)
