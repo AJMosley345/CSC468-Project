@@ -13,8 +13,5 @@ RUN npm install
 # Bundle app source
 COPY . .
 
-# Expose port 8080
-EXPOSE 8080
-
 # Runs the server.js file
-CMD [ "node", "app.js" ]
+CMD [ "npm", "start" ]
