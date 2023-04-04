@@ -16,5 +16,6 @@ spec:
       - name: mysql
         image: mysql
         ports:
-          - name: http-ports
-            containerPort: 3306
+          - containerPort: 3306
+        environment:
+          MYSQL_ROOT_PASSWORD: test123
