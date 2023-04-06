@@ -1,17 +1,16 @@
 FROM node:18
 
 # Creates app directory
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Install dependencies
 COPY package*.json ./
+COPY . .
 
 RUN npm install
 # Run once it is production ready
 # RUN npm ci --only=production
-
-# Bundle app source
-COPY . .
+EXPOSE 3000
 
 # Runs the server.js file
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "start" ]

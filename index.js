@@ -1,12 +1,12 @@
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
-
+require("dotenv")
 const db = mysql.createConnection({
-    host: "localhost",
+    host: "172.20.0.11",
     port: '3306',
-    user: "root",
-    password: "test1234",
+    user: "remote",
+    password: "test123",
     database: "project",
 });
 
@@ -90,4 +90,6 @@ app.delete("/delete/:courseId", (req, res) => {
 
 // Routes to update a record
 
-app.listen('3001', () => { })
+app.listen('3001', "localhost", () => { 
+
+});
