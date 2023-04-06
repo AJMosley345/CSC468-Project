@@ -3,10 +3,10 @@ kind: Deployment
 metadata:
   name: mysql
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: mysql
+  replicas: 1
   template:
     metadata:
       labels:
@@ -14,8 +14,22 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: mysql
+        image: mysql:latest
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "test1234"
+        - name: MYSQL_DATABASE
+          value: "project"
         ports:
-          - containerPort: 3306
-        environment:
-          MYSQL_ROOT_PASSWORD: test123
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: init-script
+          mountPath: /docker-entrypoint-initdb.d/init.sql
+          subPath: init.sql
+      volumes:
+      - name: init-script
+        configMap:
+          name: mysql-init-script
+  strategy:
+    type: Recreate
