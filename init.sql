@@ -1,15 +1,15 @@
-CREATE USER 'remote'@'172.20.0.13' IDENTIFIED BY 'test123';
-GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES, RELOAD on *.* TO 'remote'@'172.20.0.13' WITH GRANT OPTION;
+CREATE USER 'remote'@'app' IDENTIFIED WITH mysql_native_password BY 'test1234';
+GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES, RELOAD on *.* TO 'remote'@'app' WITH GRANT OPTION;
 
 CREATE TABLE Students (
     student_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(250),
-    full_name VARCHAR(250)
+    fullName VARCHAR(250)
 );
 CREATE TABLE Professors (
     professor_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(250),
-    full_name VARCHAR(250)
+    fullName VARCHAR(250)
 );
 CREATE TABLE Courses (
     course_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
@@ -26,7 +26,7 @@ CREATE TABLE  Student_Course (
 );
 
 INSERT INTO 
-    Students (username, full_name)
+    Students (username, fullName)
 VALUES 
     ("AM01", "Anthony Mosley"),
     ("AZ02", "Aroum Zombra"),
@@ -35,7 +35,7 @@ VALUES
     ("HK05", "Hayden Kanak");
 
 INSERT INTO
-    Professors (username, full_name)
+    Professors (username, fullName)
 VALUES
     ("TProfessor", "Test Professor"),
     ("TProfessor2", "Test Professor2"),
