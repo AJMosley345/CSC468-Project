@@ -8,9 +8,10 @@ COPY package*.json ./
 COPY . .
 
 RUN npm install
+RUN npx prisma generate
 # Run once it is production ready
 # RUN npm ci --only=production
-EXPOSE 3001
+EXPOSE 3000
 
 # Runs the server.js file
-CMD [ "npm", "run", "start" ]
+CMD [ "npm", "run", "dev" ]
