@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Courses {
+  course_id      Int              @id @default(autoincrement())
+  course_number  String?          @db.VarChar(250)
+  course_name    String?          @db.VarChar(250)
+  Student_Course Student_Course[]
+}
+
+model Professors {
+  professor_id Int     @id @default(autoincrement())
+  username     String? @db.VarChar(250)
+  pass         String? @db.VarChar(250)
+  fullName     String? @db.VarChar(250)
+}
+
+model Student_Course {
+  student_id Int
+  course_id  Int
+  Students   Students @relation(fields: [student_id], references: [student_id], onDelete: NoAction, onUpdate: NoAction, map: "Student_Course_ibfk_1")
+  Courses    Courses  @relation(fields: [course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction, map: "Student_Course_ibfk_2")
+
+  @@id([student_id, course_id])
+  @@index([course_id], map: "course_id")
+}
+
+model Students {
+  student_id     Int              @id @default(autoincrement())
+  username       String?          @db.VarChar(250)
+  pass           String?          @db.VarChar(250)
+  fullName       String?          @db.VarChar(250)
+  Student_Course Student_Course[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model Meeting {
+  meeting_id String? @db.VarChar(250)
+
+  @@ignore
+}
