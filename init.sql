@@ -1,20 +1,23 @@
-CREATE USER 'remote'@'app' IDENTIFIED WITH mysql_native_password BY 'test1234';
-GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES, RELOAD on *.* TO 'remote'@'app' WITH GRANT OPTION;
-
 CREATE TABLE Students (
     student_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(250),
+    pass VARCHAR(250),
     fullName VARCHAR(250)
 );
 CREATE TABLE Professors (
     professor_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(250),
+    pass VARCHAR(250),
     fullName VARCHAR(250)
 );
 CREATE TABLE Courses (
     course_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     course_number VARCHAR(250),
     course_name VARCHAR(250)
+);
+
+CREATE TABLE Meeting (
+    meeting_id VARCHAR(250)
 );
 
 CREATE TABLE  Student_Course (
@@ -26,21 +29,21 @@ CREATE TABLE  Student_Course (
 );
 
 INSERT INTO 
-    Students (username, fullName)
+    Students (username, pass, fullName)
 VALUES 
-    ("AM01", "Anthony Mosley"),
-    ("AZ02", "Aroum Zombra"),
-    ("MB03", "Michael Burns"),
-    ("JH04", "Joey Haywood"),
-    ("HK05", "Hayden Kanak");
+    ("AM01", "123", "Anthony Mosley"),
+    ("AZ02", "123", "Aroum Zombra"),
+    ("MB03", "123", "Michael Burns"),
+    ("JH04", "123", "Joey Haywood"),
+    ("HK05", "123", "Hayden Kanak");
 
 INSERT INTO
-    Professors (username, fullName)
+    Professors (username, pass, fullName)
 VALUES
-    ("TProfessor", "Test Professor"),
-    ("TProfessor2", "Test Professor2"),
-    ("TProfessor3", "Test Professor3"),
-    ("TProfessor4", "Test Professor4");
+    ("TProfessor", "123", "Test Professor"),
+    ("TProfessor2", "123", "Test Professor2"),
+    ("TProfessor3", "123", "Test Professor3"),
+    ("TProfessor4", "123", "Test Professor4");
 
 INSERT INTO
     Courses (course_number, course_name)
