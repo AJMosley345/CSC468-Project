@@ -1,11 +1,5 @@
-const mysql = require('mysql2');
+import { PrismaClient } from "@prisma/client";
 
-const db = mysql.createConnection({
-    host: "db",
-    port: '3306',
-    user: "remote",
-    password: "test123",
-    database: "project",
-});
+const prisma = new PrismaClient();
 
-export default db;
+export default prisma;

@@ -1,10 +1,16 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from "../../../lib/db";
 
 export default async function handler(req, res) {
-  const prisma = new PrismaClient();
-  const students = await prisma.students.findMany();
-  const paths = students.map((student) => ({
-    params: { id: student.student_id.toString() },
-  }));
-  res.json({ paths, fallback: true });
+  const { id } = req.query;
+  const student = await prisma.students.findUnique({
+    where: { student_id: Number(id) },
+    include: {
+      Student_Course: {
+        include: {
+          Courses: true,
+        },
+      },
+    },
+  });
+  res.json({ props: { student } });
 }

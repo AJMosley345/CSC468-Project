@@ -13,14 +13,19 @@ export default function Navbar() {
                             Home
                         </MenuItem>
                     </Link>                    
-                    <Link href="/classlist" style={{ textDecoration: 'none', color: "#16123f" }}>
+                    <Link href="/lists/classlist" style={{ textDecoration: 'none', color: "#16123f" }}>
                         <MenuItem>
                             Class List
                         </MenuItem>
                     </Link>
-                    <Link href="/login" style={{ textDecoration: 'none', color: "#16123f" }}>
+                    <Link href="/lists/students" style={{ textDecoration: 'none', color: "#16123f" }}>
                         <MenuItem>
-                            Login
+                            Student List
+                        </MenuItem>
+                    </Link>
+                    <Link href="/lists/professors" style={{ textDecoration: 'none', color: "#16123f" }}>
+                        <MenuItem>
+                            Professor List
                         </MenuItem>
                     </Link>
                 </Toolbar>

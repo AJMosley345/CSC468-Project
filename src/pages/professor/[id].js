@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from '@/lib/db';
 import { Typography, List, ListItem } from '@mui/material';
 import { useRouter } from "next/router";
-
-const prisma = new PrismaClient();
+import Navbar from "@/components/Navbar";
 
 export async function getStaticPaths() {
   const professors = await prisma.professors.findMany()
@@ -30,6 +29,7 @@ export default function professorPage({ professor }) {
 
     return (
       <>
+      <Navbar />
         <Typography variant='h2'> Professor Info </Typography>
         <List>
             <ListItem>

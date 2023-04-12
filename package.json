@@ -18,12 +18,10 @@
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "mysql2": "^3.2.0",
     "next": "13.3.0",
     "nookies": "^2.5.2",
     "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-prisma": "^4.12.0"
+    "react-dom": "18.2.0"
   },
   "devDependencies": {
     "prisma": "^4.12.0"

@@ -1,10 +1,10 @@
 import React from 'react';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../lib/db';
 import { List, ListItem, Typography } from '@mui/material'
-const prisma = new PrismaClient();
+import Navbar from '../../components/Navbar';
 
 export async function getStaticProps() {
-  const students = await prisma.students.findMany()
+  const students = await prisma.students.findMany();
   return {
     props: {
       students
@@ -15,6 +15,7 @@ export async function getStaticProps() {
 export default function Students({ students }) {
   return (
     <>
+    <Navbar />
       <Typography variant='h2'> Students </Typography>
       <List>
         {students.map(student => (
