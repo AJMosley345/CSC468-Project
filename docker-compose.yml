@@ -25,7 +25,7 @@ services:
   webui:
     hostname: webui
     build:
-      context: ./webui2
+      context: ./webui
       dockerfile: webui.Dockerfile
     image: webui
     container_name: webui
