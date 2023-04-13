@@ -1,5 +1,5 @@
 import prisma from '@/lib/db';
-import { Typography, List, ListItem } from '@mui/material';
+import { Typography, List, ListItem, Button } from '@mui/material';
 import { useRouter } from "next/router";
 import Navbar from "@/components/Navbar";
 
@@ -14,7 +14,14 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const professor = await prisma.professors.findUnique({
-    where: { professor_id: Number(params.id) }
+    where: { professor_id: Number(params.id) },
+    include: {
+      professor_courses: {
+        include: {
+          courses: true
+        }
+      }
+    }
   })
 
   return { props: { professor } }
@@ -38,7 +45,14 @@ export default function professorPage({ professor }) {
             <ListItem>
               <Typography>Name: {professor.fullName}</Typography>
             </ListItem>
+            <Typography>Your classes:</Typography>
+            <div key={professor.professor_courses.course_id}>
+            {professor.professor_courses.map((professorCourse) => (
+                <Typography>{professorCourse.courses.course_number}: {professorCourse.courses.course_name}</Typography>
+            ))}
+            </div>
         </List>
+        <Button variant='contained' sx={{ background: "#abd699" }}  onClick={() => router.push("/lists/professors")}>Go back to Professor List</Button>
       </>
     )
   }

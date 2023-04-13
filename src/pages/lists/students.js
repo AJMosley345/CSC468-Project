@@ -1,7 +1,8 @@
 import React from 'react';
 import prisma from '../../lib/db';
-import { List, ListItem, Typography } from '@mui/material'
+import { Box, Button, List, ListItem, Stack, Typography } from '@mui/material'
 import Navbar from '../../components/Navbar';
+import { useRouter } from 'next/router';
 
 export async function getStaticProps() {
   const students = await prisma.students.findMany();
@@ -13,17 +14,26 @@ export async function getStaticProps() {
 }
 
 export default function Students({ students }) {
+  const router = new useRouter();
+
   return (
     <>
     <Navbar />
       <Typography variant='h2'> Students </Typography>
-      <List>
+      <Stack>
         {students.map(student => (
-          <ListItem>
+          <Box>
             <Typography> {student.username}: {student.fullName}</Typography>
-          </ListItem>
+            <Button 
+              variant='contained' 
+              sx={{ background: "#abd699" }} 
+              onClick={() => router.push(`/student/${ student.student_id }`)}
+            >
+              Profile
+            </Button>
+          </Box>
         ))}
-      </List>
+      </Stack>
     </>
   )
 }

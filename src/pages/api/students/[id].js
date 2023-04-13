@@ -5,9 +5,9 @@ export default async function handler(req, res) {
   const student = await prisma.students.findUnique({
     where: { student_id: Number(id) },
     include: {
-      Student_Course: {
+      student_courses: {
         include: {
-          Courses: true,
+          courses: true,
         },
       },
     },

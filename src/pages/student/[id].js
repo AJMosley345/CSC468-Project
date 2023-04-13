@@ -1,5 +1,5 @@
 import prisma from '../../lib/db';
-import { Typography, List, ListItem } from '@mui/material';
+import { Typography, List, ListItem, Button } from '@mui/material';
 import { useRouter } from "next/router";
 import Navbar from "../../components/Navbar";
 
@@ -13,16 +13,28 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   const student = await prisma.students.findUnique({
-    where: { student_id: Number(params.id) },
+    where: { 
+      student_id: Number(params.id)
+    },
     include: {
       student_courses: {
         include: {
-          courses: true,
-        },
-      },
-    },
+          courses: true
+        }
+      }
+    }
   });
-  return { props: { student } }
+  const professor = await prisma.professors.findUnique({
+    where: { professor_id: Number(params.id) },
+    include: {
+      professor_courses: {
+        include: {
+          professors: true
+        }
+      }
+    }
+  });
+  return { props: { student, professor } }
 }
 
 export default function StudentPage({ student }) {
@@ -46,9 +58,12 @@ export default function StudentPage({ student }) {
       <List>
       <Typography>Class List:</Typography>
             {student.student_courses.map((studentCourse) => (
-                <Typography>{studentCourse.courses.course_name}</Typography>
+              <>
+                <Typography>{studentCourse.courses.course_number}: {studentCourse.courses.course_name}</Typography>
+              </>
             ))}
       </List>
+      <Button variant='contained' sx={{ background: "#abd699" }}  onClick={() => router.push("/lists/students")}>Go back to Student List</Button>
     </>
   )
 }
