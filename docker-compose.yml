@@ -5,9 +5,9 @@ services:
     hostname: db
     build: 
       context: ./database
-      dockerfile: db.Dockerfile
+      dockerfile: Dockerfile
     image: db
-    container_name: db
+    container_name: db_new
     restart: always
     environment:
       $MYSQL_DATABASE: project
@@ -22,16 +22,36 @@ services:
   webui:
     hostname: webui
     build:
-      context: ./webui
+      context: ./webui2
       dockerfile: webui.Dockerfile
     image: webui
     container_name: webui
-    depends_on:
-      - db
     stdin_open: true
     tty: true
     ports:
-      - "3001:3000"
+      - "3000:3000"
     environment:
-      $DATABASE_URL: mysql://remote:test1234@db:3306/project?schema=public
+      $DATABASE_URL: mysql://remote:test1234@172.20.0.11:3306/project?schema=public
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.12
+  
+  # webserver:
+  #   hostname: nginx
+  #   build:
+  #     context: ./webserver
+  #     dockerfile: webserver.Dockerfile
+  #   image: webserver
+  #   container_name: webserver
+  #   ports:
+  #     - "80:80"
+  #   networks:
+  #     my-network:
+  #       ipv4_address: 172.20.0.13
 
+networks:
+  my-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
