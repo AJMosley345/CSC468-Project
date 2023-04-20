@@ -16,7 +16,7 @@ COPY . .
 RUN npx prisma generate
 
 # Expose the port that the app listens on
-EXPOSE 3000
+# EXPOSE 3000
 
 # Set environment variables for the Prisma database connection
 ENV DATABASE_URL "mysql://remote:test1234@172.20.0.11:3306/project?schema=public"

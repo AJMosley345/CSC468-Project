@@ -9,7 +9,7 @@ datasource db {
 
 model Courses {
   course_id         Int                 @id @default(autoincrement()) @unique
-  course_number     String?             @db.VarChar(250)
+  course_number     String?             @db.VarChar(250) 
   course_name       String?             @db.VarChar(250)
   taught_by         Professor[]    
   taken_by          Student[]           
@@ -18,7 +18,7 @@ model Courses {
 model Professor {
   professor_id      Int                 @id @default(autoincrement()) @unique
   username          String?             @db.VarChar(250) @unique
-  pass              String?             @db.VarChar(250)
+  pass              String?             @db.VarChar(250) @unique
   fullName          String?             @db.VarChar(250)
   courses_taught    Courses[]
 }
@@ -26,7 +26,7 @@ model Professor {
 model Student {
   student_id      Int               @id @default(autoincrement()) @unique
   username        String?           @db.VarChar(250) @unique
-  pass            String?           @db.VarChar(250)
+  pass            String?           @db.VarChar(250) @unique
   fullName        String?           @db.VarChar(250)
   courses_taken  Courses[]
 }

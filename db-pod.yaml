@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.28.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.network/webui-db-my-network: "true"
+    io.kompose.service: db
+  name: db
+spec:
+  containers:
+    - env:
+        - name: $MYSQL_DATABASE
+          value: project
+        - name: $MYSQL_ROOT_PASSWORD
+          value: test1234
+      image: db-project
+      name: db
+      ports:
+        - containerPort: 3306
+      resources: {}
+  hostname: db
+  restartPolicy: OnFailure
+status: {}
