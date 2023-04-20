@@ -1,31 +1,41 @@
-version: '3.9'
+version: '3'
 services:
   webui:
     hostname: webui
     build:
       context: ./webui
       dockerfile: Dockerfile
-    image: webui
+    image: webui-project
     container_name: webui
     restart: on-failure
     stdin_open: true
     tty: true
     ports:
-      - "3000:3000"
+      - 3000:3000
     environment:
       $DATABASE_URL: mysql://root:test1234@localhost:3306/project?schema=public
     networks:
       my-network:
         ipv4_address: 172.20.0.12
     command: >
-      sh -c "sleep 10 && npx prisma push db && npx prisma db seed && yarn run dev"
-  
+      sh -c "sleep 10 && npx prisma db push && npx prisma db seed && yarn run dev"
+  nginx:
+    hostname: nginx
+    build: 
+      context: ./webserver
+      dockerfile: Dockerfile
+    image: nginx-project
+    ports:
+      - 80:80
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.13
   db:
     hostname: db
     build: 
       context: ./database
       dockerfile: Dockerfile
-    image: db
+    image: db-project
     container_name: db
     restart: on-failure
     environment:

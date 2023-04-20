@@ -23,7 +23,7 @@ spec:
         io.kompose.service: nginx
     spec:
       containers:
-        - image: nginx-project
+        - image: 127.0.0.1:30000/nginx-project
           name: nginx
           ports:
             - containerPort: 80

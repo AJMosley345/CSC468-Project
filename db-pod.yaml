@@ -4,7 +4,6 @@ metadata:
   annotations:
     kompose.cmd: kompose convert
     kompose.version: 1.28.0 (HEAD)
-  creationTimestamp: null
   labels:
     io.kompose.network/webui-db-my-network: "true"
     io.kompose.service: db
@@ -16,7 +15,7 @@ spec:
           value: project
         - name: $MYSQL_ROOT_PASSWORD
           value: test1234
-      image: db-project
+      image: 127.0.0.1:30000/db-project
       name: db
       ports:
         - containerPort: 3306
