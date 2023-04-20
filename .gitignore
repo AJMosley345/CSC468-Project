@@ -34,7 +34,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# enviroment variables
 .env
-
-PlannedFeatures/

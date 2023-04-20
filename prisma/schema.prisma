@@ -7,50 +7,30 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model courses {
-  course_id         Int                 @id @default(autoincrement())
+model Courses {
+  course_id         Int                 @id @default(autoincrement()) @unique
   course_number     String?             @db.VarChar(250)
   course_name       String?             @db.VarChar(250)
-  professor_courses professor_courses[]
-  student_courses   student_courses[]
+  taught_by         Professor[]    
+  taken_by          Student[]           
 }
 
-model professors {
-  professor_id      Int                 @id @default(autoincrement())
-  username          String?             @db.VarChar(250)
+model Professor {
+  professor_id      Int                 @id @default(autoincrement()) @unique
+  username          String?             @db.VarChar(250) @unique
   pass              String?             @db.VarChar(250)
   fullName          String?             @db.VarChar(250)
-  professor_courses professor_courses[]
+  courses_taught    Courses[]
 }
 
-model students {
-  student_id      Int               @id @default(autoincrement())
-  username        String?           @db.VarChar(250)
+model Student {
+  student_id      Int               @id @default(autoincrement()) @unique
+  username        String?           @db.VarChar(250) @unique
   pass            String?           @db.VarChar(250)
   fullName        String?           @db.VarChar(250)
-  student_courses student_courses[]
-}
-
-model student_courses {
-  student_id Int
-  course_id  Int
-  students   students @relation(fields: [student_id], references: [student_id], onDelete: NoAction, onUpdate: NoAction, map: "student_courses_ibfk_2")
-  courses    courses  @relation(fields: [course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction, map: "student_courses_ibfk_1")
-
-  @@id([student_id, course_id])
-  @@index([course_id], map: "course_id")
+  courses_taken  Courses[]
 }
 
 model meetings {
   meeting_id Int @id @default(autoincrement())
-}
-
-model professor_courses {
-  professor_id Int
-  course_id    Int
-  professors   professors @relation(fields: [professor_id], references: [professor_id], onDelete: NoAction, onUpdate: NoAction, map: "professor_courses_ibfk_1")
-  courses      courses    @relation(fields: [course_id], references: [course_id], onDelete: NoAction, onUpdate: NoAction, map: "professor_courses_ibfk_2")
-
-  @@id([professor_id, course_id])
-  @@index([course_id], map: "course_id")
 }
