@@ -12,7 +12,6 @@ status: {}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  annotations: null
   labels:
     app.kubernetes.io/instance: kubernetes-dashboard
     app.kubernetes.io/managed-by: Helm
@@ -25,7 +24,6 @@ metadata:
 apiVersion: v1
 kind: Secret
 metadata:
-  annotations: null
   labels:
     app.kubernetes.io/instance: kubernetes-dashboard
     app.kubernetes.io/managed-by: Helm
