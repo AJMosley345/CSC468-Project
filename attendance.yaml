@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.28.0 (HEAD)
+  labels:
+    io.kompose.service: nginx
+  name: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: nginx
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.28.0 (HEAD)
+      labels:
+        io.kompose.network/webui-db-my-network: "true"
+        io.kompose.service: nginx
+    spec:
+      containers:
+        - image: 127.0.0.1:30000/nginx-project
+          name: nginx
+          ports:
+            - containerPort: 80
+      hostname: nginx
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.28.0 (HEAD)
+  labels:
+    io.kompose.network/webui-db-my-network: "true"
+    io.kompose.service: db
+  name: db
+spec:
+  containers:
+    - env:
+        - name: $MYSQL_DATABASE
+          value: project
+        - name: $MYSQL_ROOT_PASSWORD
+          value: test1234
+      image: 127.0.0.1:30000/db-project
+      name: db
+      ports:
+        - containerPort: 3306
+      resources: {}
+  hostname: db
+  restartPolicy: OnFailure
+status: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.28.0 (HEAD)
+  labels:
+    io.kompose.network/webui-db-my-network: "true"
+    io.kompose.service: webui
+  name: webui
+spec:
+  containers:
+    - args:
+        - sh
+        - -c
+        - sleep 10 && npx prisma db push && npx prisma db seed && yarn run dev
+      env:
+        - name: $DATABASE_URL
+          value: mysql://root:test1234@db-service:3306/project?schema=public
+      image: 127.0.0.1:30000/webui-project
+      name: webui
+      ports:
+        - containerPort: 3000
+      stdin: true
+      tty: true
+  hostname: webui
+  restartPolicy: OnFailure
+status: {}
