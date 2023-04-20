@@ -1,0 +1,10 @@
+.git
+node_modules
+.next
+.eslint*
+README.md
+npm-debug.log
+yarn-error.log
+Dockerfile
+.dockerignore
+docker-compose.yml
