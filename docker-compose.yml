@@ -19,6 +19,7 @@ services:
         ipv4_address: 172.20.0.12
     command: >
       sh -c "sleep 10 && npx prisma push db && npx prisma db seed && yarn run dev"
+  
   db:
     hostname: db
     build: 
