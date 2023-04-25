@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+        - args:
+            - sh
+            - -c
+            - sleep 10 && npx prisma db push && npx prisma db seed && yarn run dev
+          env:
+            - name: $DATABASE_URL
+              value: mysql://root:test1234@db-service:3306/project?schema=public
+          image: 127.0.0.1:30000/webui-project
+          name: webui
+          ports:
+            - containerPort: 3000
+          stdin: true
+          tty: true
+      hostname: webui
+      restartPolicy: OnFailure
+---
+

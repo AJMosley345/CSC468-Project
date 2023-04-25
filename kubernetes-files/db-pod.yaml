@@ -22,4 +22,3 @@ spec:
       resources: {}
   hostname: db
   restartPolicy: OnFailure
-status: {}

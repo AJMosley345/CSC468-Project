@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webui
+spec:
+  selector:
+    matchLabels:
+      app: webui
+  template:
+    metadata:
+      labels:
+        app: webui
+    spec:
+      containers:
+        - args:
+            - sh
+            - -c
+            - sleep 10 && npx prisma db push && npx prisma db seed && yarn run dev
+          env:
+            - name: $DATABASE_URL
+              value: mysql://root:test1234@db-service:3306/project?schema=public
+          image: 127.0.0.1:30000/webui-project
+          name: webui
+          ports:
+            - containerPort: 3000
+          stdin: true
+          tty: true
+      hostname: webui
+      restartPolicy: OnFailure
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx
+  spec:
+    containers:
+      - image: 127.0.0.1:30000/nginx-project
+        name: nginx
+        ports:
+          - containerPort: 80
+    hostname: nginx
+    restartPolicy: Always
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:latest
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "test1234"
+        - name: MYSQL_DATABASE
+          value: "project"
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: init-script
+          mountPath: /docker-entrypoint-initdb.d/init.sql
+          subPath: init.sql
+      volumes:
+      - name: init-script
+        configMap:
+          name: mysql-init-script
+  strategy:
+    type: Recreate
