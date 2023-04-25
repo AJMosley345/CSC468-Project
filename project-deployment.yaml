@@ -17,29 +17,37 @@ spec:
             - -c
             - sleep 10 && npx prisma db push && npx prisma db seed && yarn run dev
           env:
-            - name: $DATABASE_URL
-              value: mysql://root:test1234@db-service:3306/project?schema=public
-          image: 127.0.0.1:30000/webui-project
+            - name: DATABASE_URL
+              value: "mysql://root:test1234@db-service:3306/project?schema=public"
+          image: ajmosley345/468-project:webui
           name: webui
           ports:
             - containerPort: 3000
           stdin: true
           tty: true
       hostname: webui
-      restartPolicy: OnFailure
+      restartPolicy: Always
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
-  spec:
-    containers:
-      - image: 127.0.0.1:30000/nginx-project
-        name: nginx
-        ports:
-          - containerPort: 80
-    hostname: nginx
-    restartPolicy: Always
+  name: webserver
+spec:
+  selector:
+    matchLabels:
+      app: webserver
+  template:
+    metadata:
+      labels:
+        app: webserver
+    spec:
+      containers:
+        - image: ajmosley345/468-project:webserver
+          name: webserver
+          ports:
+            - containerPort: 80
+      hostname: webserver
+      restartPolicy: Always
 ---
 apiVersion: apps/v1
 kind: Deployment

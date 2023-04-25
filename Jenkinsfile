@@ -6,10 +6,18 @@ pipeline {
         userid = "am950104"
     }
     stages {
-        stage('Test'){
+        stage('Publish'){
             agent {
                 kubernetes {
-                    inheritFrom ''
+                    inheritFrom 'docker'
+                }
+            }
+            steps {
+                container('docker') {
+                    sh 'docker login -u admin -p registry https://${registry}:443'
+                    sh 'docker-compose - '
+                    sh 'docker build -t ${registry}:443/:$BUILD_NUMBER .'
+                    sh 'docker push ${registry}:443/go_app:$BUILD_NUMBER'
                 }
             }
         }
