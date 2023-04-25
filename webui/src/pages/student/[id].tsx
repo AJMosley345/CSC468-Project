@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const student = await prisma.student.findUnique({
         where: {
-            student_id: Number(params?.id),
+            id: Number(params?.id),
         },
         include: {
             courses_taken: {
@@ -46,7 +46,7 @@ const StudentInfo: React.FC<{ student: Student }> = ({ student }) => {
                                 <Typography>{course.course_number}</Typography>
                                 <Typography>{course.course_name}</Typography>
                                 {course.taught_by.map((professor) => (
-                                    <Typography key={professor.professor_id} component="span">
+                                    <Typography key={professor.id} component="span">
                                         {professor.fullName}
                                     </Typography>
                                 ))}

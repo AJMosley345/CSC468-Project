@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const studentId = Number(id);
         const student = await prisma.student.update({
             where: {
-                student_id: studentId,
+                id: studentId,
             },
             data: {
                 courses_taken: {

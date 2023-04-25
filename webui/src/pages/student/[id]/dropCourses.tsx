@@ -19,7 +19,7 @@ import { StudentProps } from "../../../../components/StudentList";
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const student = await prisma.student.findUnique({
         where: {
-            student_id: Number(params?.id),
+            id: Number(params?.id),
         },
         include: {
             courses_taken: true,

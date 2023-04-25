@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const professor = await prisma.professor.findUnique({
         where: {
-            professor_id: Number(params?.id),
+            id: Number(params?.id),
         },
         include: {
             courses_taught: true,
@@ -41,7 +41,7 @@ const ProfessorInfo: React.FC<Professor> = (props) => {
                 variant="contained" 
                 onClick={() => 
                 router.push(
-                    `/professor/${props.professor_id.toString()}/addCourses`
+                    `/professor/${props.id.toString()}/addCourses`
                 )}
             >
                 Add Courses
@@ -50,7 +50,7 @@ const ProfessorInfo: React.FC<Professor> = (props) => {
                 variant="contained" 
                 onClick={() => 
                 router.push(
-                    `/professor/${props.professor_id.toString()}/dropCourses`
+                    `/professor/${props.id.toString()}/dropCourses`
                 )}
             >
                 Drop Courses

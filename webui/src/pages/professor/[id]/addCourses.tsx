@@ -18,7 +18,7 @@ import { Course, Professor } from "../../../../interfaces";
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     const professor = await prisma.professor.findUnique({
         where: {
-            professor_id: Number(params?.id),
+            id: Number(params?.id),
         },
         include: {
             courses_taught: true,
