@@ -1,29 +1,29 @@
 import React from "react";
 import { Student } from "../../../interfaces";
 import { prisma } from "../../../lib/db";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { Box, Button, Divider, Stack, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-    const student = await prisma.student.findUnique({
+export const getServerSideProps = async (
+    context: GetServerSidePropsContext,
+) => {
+    const id = context.params?.id;
+    const student = await prisma.student.findFirst({
         where: {
-            id: Number(params?.id),
+            id: Number(id)
         },
         include: {
-            courses_taken: {
-                include:{
-                    taught_by: true
-                }
-            }
+            courses_taken: true,
         }
     });
     return {
-        props: {
-            student,
-        }
+        props: student,
     };
 };
+
+type ServerSideProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+
 
 
 
@@ -60,7 +60,7 @@ const StudentInfo: React.FC<{ student: Student }> = ({ student }) => {
                 variant="contained" 
                 onClick={() => 
                 router.push(
-                    `/student/${student.student_id.toString()}/addCourses`
+                    `/student/${student.id.toString()}/addCourses`
                 )}
                 
             >
@@ -70,7 +70,7 @@ const StudentInfo: React.FC<{ student: Student }> = ({ student }) => {
                 variant="contained" 
                 onClick={() => 
                 router.push(
-                    `/student/${student.student_id.toString()}/dropCourses`
+                    `/student/${student.id.toString()}/dropCourses`
                 )}
                 sx={{ mx: 2 }}
             >
