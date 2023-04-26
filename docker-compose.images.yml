@@ -1,57 +1,58 @@
 version: '3'
 services:
-  db:
-    hostname: db
-    build: 
-      context: ./database
-      dockerfile: Dockerfile
-    image: db
-    container_name: db
-    restart: on-failure
-    environment:
-      $MYSQL_DATABASE: project
-      $MYSQL_ROOT_PASSWORD: test1234
-    expose:
-      - "3306"
-    ports:
-      - "3306:3306"
-    networks:
-      my-network:
-        ipv4_address: 172.20.0.11
+  # db:
+    # hostname: db
+    # build: 
+    #   context: ./database
+    #   dockerfile: Dockerfile
+    # image: ajmosley345/468-project:db
+    # container_name: db
+    # restart: on-failure
+    # environment:
+    #   $MYSQL_DATABASE: project
+    #   $MYSQL_ROOT_PASSWORD: test1234
+    # expose:
+    #   - "3306"
+    # ports:
+    #   - "3306:3306"
+    # networks:
+    #   my-network:
+    #     ipv4_address: 172.20.0.11
   webui:
-    hostname: webui
+    # hostname: webui
     build:
       context: ./webui
-      dockerfile: webui.Dockerfile
-    image: webui
-    container_name: webui
-    restart: on-failure
-    stdin_open: true
-    tty: true
-    ports:
-      - 3000:3000
-    environment:
-      $DATABASE_URL: mysql://root:test1234@localhost:3306/project?schema=public
-    networks:
-      my-network:
-        ipv4_address: 172.20.0.12
-    command: >
-      sh -c "sleep 10 && npx prisma db push && npx prisma db seed && yarn run dev"
-  nginx:
-    hostname: nginx
+      dockerfile: Dockerfile
+    image: ajmosley345/468-project:webui
+    # container_name: webui
+    # restart: on-failure
+    # stdin_open: true
+    # tty: true
+    # ports:
+    #   - 3000:3000
+    # environment:
+    #   DATABASE_URL: mysql://remote:test1234@172.20.0.11:3306/project?schema=public
+    # networks:
+    #   my-network:
+    #     ipv4_address: 172.20.0.12
+    # command: >
+    #   sh -c "sleep 10 && npx prisma db push && npx prisma db seed && yarn run dev"
+  webserver:
+    # hostname: webserver
+    # container_name: webserver
     build: 
       context: ./webserver
       dockerfile: Dockerfile
-    image: webserver
-    ports:
-      - 80:80
-    networks:
-      my-network:
-        ipv4_address: 172.20.0.13
+    image: ajmosley345/468-project:webserver
+    # ports:
+    #   - 80:80
+    # networks:
+    #   my-network:
+    #     ipv4_address: 172.20.0.13
 
-networks:
-  my-network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
+# networks:
+#   my-network:
+#     driver: bridge
+#     ipam:
+#       config:
+#         - subnet: 172.20.0.0/16
