@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 mysql:latest
+FROM mysql:latest
 
 RUN chown -R mysql:root /var/lib/mysql
 

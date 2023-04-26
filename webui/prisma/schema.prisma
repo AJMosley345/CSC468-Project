@@ -4,6 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
+  //url = "mysql://remote:test1234@172.20.0.11:3306/project?connect_timeout=300"
   url      = env("DATABASE_URL")
 }
 

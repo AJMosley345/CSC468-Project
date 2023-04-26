@@ -1,11 +1,29 @@
 version: '3'
 services:
+  db:
+    hostname: db
+    build: 
+      context: ./database
+      dockerfile: Dockerfile
+    image: db
+    container_name: db
+    restart: on-failure
+    environment:
+      $MYSQL_DATABASE: project
+      $MYSQL_ROOT_PASSWORD: test1234
+    expose:
+      - "3306"
+    ports:
+      - "3306:3306"
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.11
   webui:
     hostname: webui
     build:
       context: ./webui
-      dockerfile: Dockerfile
-    image: webui-project
+      dockerfile: webui.Dockerfile
+    image: webui
     container_name: webui
     restart: on-failure
     stdin_open: true
@@ -24,30 +42,13 @@ services:
     build: 
       context: ./webserver
       dockerfile: Dockerfile
-    image: nginx-project
+    image: webserver
     ports:
       - 80:80
     networks:
       my-network:
         ipv4_address: 172.20.0.13
-  db:
-    hostname: db
-    build: 
-      context: ./database
-      dockerfile: Dockerfile
-    image: db-project
-    container_name: db
-    restart: on-failure
-    environment:
-      $MYSQL_DATABASE: project
-      $MYSQL_ROOT_PASSWORD: test1234
-    expose:
-      - "3306"
-    ports:
-      - "3306:3306"
-    networks:
-      my-network:
-        ipv4_address: 172.20.0.11
+
 networks:
   my-network:
     driver: bridge
