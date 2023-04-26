@@ -11,6 +11,7 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 # Generates the Prisma Client
 RUN npx prisma generate
+ENV NEXT_PRIVATE_STANDALONE true
 RUN yarn build
 
 FROM node:18-alpine AS deploy
