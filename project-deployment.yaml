@@ -12,13 +12,11 @@ spec:
         app: webui
     spec:
       containers:
-        - args:
-            - sh
-            - -c
-            - sleep 10 && npx prisma db push && npx prisma db seed && yarn run dev
+        - command: ["/bin/sh", "-c"]
+          args: ["sleep 10 && npx prisma db push --accept-data-loss && npx prisma db seed && yarn run dev"]
           env:
             - name: DATABASE_URL
-              value: "mysql://root:test1234@db-service:3306/project?schema=public"
+              value: "mysql://root:test1234@mysql-service:3306/project?schema=public"
           image: ajmosley345/468-project:webui
           name: webui
           ports:

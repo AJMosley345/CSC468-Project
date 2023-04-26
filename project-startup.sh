@@ -14,6 +14,7 @@ fi
 
 echo "Creating namespace project"
 kubectl create namespace project 
+kubectl create configMap mysql-init-script --from-file=./webui-db/database/init.sql
  
 echo "Creating pods"
 kubectl create -f project.yaml --namespace project
