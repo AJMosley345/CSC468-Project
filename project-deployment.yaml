@@ -95,9 +95,9 @@ spec:
         image: ajmosley345/468-project:webui
         command: ["/bin/sh"]
         args: ["/scripts/startup.sh"]
-        env:
-        - name: DATABASE_URL
-          value: mysql://remote:test1234@mysql-service:3306/project
+        # env:
+        # - name: DATABASE_URL
+        #   value: mysql://remote:test1234@mysql-service:3306/project
         ports:
         - containerPort: 3000
         volumeMounts:
