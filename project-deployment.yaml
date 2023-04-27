@@ -94,20 +94,20 @@ spec:
       - name: webui
         image: ajmosley345/468-project:webui
         command: ["/bin/sh"]
-        args: ["/scripts/startup.sh"]
+        args: ["/app/startup.sh"]
         env:
         - name: DATABASE_URL
           value: mysql://remote:test1234@mysql-service:3306/project?schema=public
         ports:
         - containerPort: 3000
-        volumeMounts:
-        - name: startup
-          mountPath: /scripts
-      volumes:
-      - name: startup
-        configMap:
-          name: startup
-          defaultMode: 0744
+      #   volumeMounts:
+      #   - name: startup
+      #     mountPath: /scripts
+      # volumes:
+      # - name: startup
+      #   configMap:
+      #     name: startup
+      #     defaultMode: 0744
 ---
 apiVersion: apps/v1
 kind: Deployment
