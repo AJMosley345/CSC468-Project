@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 node:18-alpine AS base
+FROM node:18-alpine AS base
 WORKDIR /app
 
 COPY package.json yarn.lock ./
@@ -29,4 +29,4 @@ COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 COPY --from=build /app/yarn.lock .
 # Set environment variables for the Prisma database connection
-ENV DATABASE_URL "mysql://remote:test1234@172.20.0.11:3306/project?schema=public"
+#ENV DATABASE_URL "mysql://remote:test1234@mysql-:3306/project?schema=public"

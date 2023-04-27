@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 node:18-alpine
+FROM node:18-alpine
 
 # Set the working directory to /app
 WORKDIR /app
@@ -16,4 +16,4 @@ COPY . .
 RUN npx prisma generate
 
 # Set environment variables for the Prisma database connection
-ENV DATABASE_URL "mysql://remote:test1234@172.20.0.11:3306/project?schema=public"
+#ENV DATABASE_URL "mysql://remote:test1234@172.20.0.11:3306/project?schema=public"

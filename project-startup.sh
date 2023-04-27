@@ -6,16 +6,16 @@ docker-compose -f docker-compose.images.yml push
 
 namespaceStatus=$(kubectl get namespaces project -o json | jq .status.phase -r)
 
-# if [ $namespaceStatus == "Active" ]
-# then
-#     echo "Namespace project exists, need to clean up"
-#     kubectl delete namespaces project
-# fi
+if [ $namespaceStatus == "Active" ]
+then
+    echo "Namespace project exists, need to clean up"
+    kubectl delete namespaces project
+fi
 
 echo "Creating namespace project"
 kubectl create namespace project 
 kubectl create configmap mysql-init-script --from-file=./database/init.sql -n project
-kubectl create configmap startup --from-file=./startup.sh -n project
+kubectl create configmap startup --from-file=./webui/startup.sh -n project
 
 echo "Creating pods"
 kubectl create -f project-deployment.yaml --namespace project
