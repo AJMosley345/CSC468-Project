@@ -1,6 +1,8 @@
 #!/bin/sh
 set -x
-sleep 10 
-npx prisma db push 
+cd /app
+sleep 10
+npx prisma generate
+npx prisma migrate dev
 npx prisma db seed 
 yarn run dev

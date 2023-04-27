@@ -15,7 +15,5 @@ COPY . .
 # Generates the Prisma Client
 RUN npx prisma generate
 
-COPY ./startup.sh ./
-
 # Set environment variables for the Prisma database connection
-#ENV DATABASE_URL "mysql://remote:test1234@172.20.0.11:3306/project?schema=public"
+ENV DATABASE_URL "mysql://remote:test1234@mysql-service:3306/project?schema=public"
