@@ -99,13 +99,13 @@ spec:
           value: mysql://remote:test1234@db:3306/project?schema=public
         ports:
         - containerPort: 3000
-          volumeMounts:
-          - name: startup-script
-            mountPath: /scripts
+        volumeMounts:
+        - name: startup
+          mountPath: /scripts
       volumes:
-      - name: startup-script
+      - name: startup
         configMap:
-          name: webui-startup-script
+          name: startup
           defaultMode: 0744
         
         # command:
