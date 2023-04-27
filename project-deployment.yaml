@@ -1,51 +1,44 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: webui
-spec:
-  selector:
-    matchLabels:
-      app: webui
-  template:
-    metadata:
-      labels:
-        app: webui
-    spec:
-      containers:
-        - command: ["/bin/sh", "-c"]
-          args: ["sleep 10 && npx prisma db push --accept-data-loss && npx prisma db seed && yarn run dev"]
-          env:
-            - name: DATABASE_URL
-              value: "mysql://root:test1234@mysql-service:3306/project?schema=public"
-          image: ajmosley345/468-project:webui
-          name: webui
-          ports:
-            - containerPort: 3000
-          stdin: true
-          tty: true
-      hostname: webui
-      restartPolicy: Always
+apiVersion: v1 
+kind: Service 
+metadata:  
+  name: mysql-service
+spec:  
+  type: ClusterIP
+  ports:
+    - port: 3306
+      protocol: TCP
+      targetPort: mysql
+  selector:    
+      app: mysql
 ---
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: webserver
+  name: webserver-service
+  labels:
+    app: webserver
 spec:
+  type: NodePort
+  ports:
+  - port: 80
+    targetPort: 80
+    nodePort: 30090
   selector:
-    matchLabels:
-      app: webserver
-  template:
-    metadata:
-      labels:
-        app: webserver
-    spec:
-      containers:
-        - image: ajmosley345/468-project:webserver
-          name: webserver
-          ports:
-            - containerPort: 80
-      hostname: webserver
-      restartPolicy: Always
+    app: webserver
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webui-service
+  labels:
+    app: webui
+spec:
+  ports:
+    - name: "3000"
+      port: 3000
+      targetPort: 3000
+  selector:
+    app: webui
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -82,3 +75,57 @@ spec:
           name: mysql-init-script
   strategy:
     type: Recreate
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webui
+spec:
+  selector:
+    matchLabels:
+      app: webui
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: webui
+    spec:
+      containers:
+      - name: webui
+        image: ajmosley345/468-project:webui
+        ports:
+        - containerPort: 3000
+        env:
+        - name: DATABASE_URL
+          value: mysql://remote:test1234@db:3306/project?schema=public
+        # command:
+        # - /bin/sh
+        # - -c
+        # - "sleep 10 && npx prisma db push --accept-data-loss && npx prisma db seed && yarn run dev"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webserver
+spec:
+  selector:
+    matchLabels:
+      app: webserver
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: webserver
+    spec:
+      containers:
+      - name: webserver
+        image: ajmosley345/468-project:webserver
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
