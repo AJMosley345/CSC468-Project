@@ -64,7 +64,6 @@ spec:
           value: "project"
         ports:
         - containerPort: 3306
-          targetPort: 3306
           name: mysql
         volumeMounts:
         - name: init-script
