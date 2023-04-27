@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const professor = await prisma.professor.findUnique({
         where: {
-          professor_id: professorId,
+          id: professorId,
         },
         include: {
           courses_taught: true

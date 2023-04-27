@@ -9,7 +9,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const professorId = Number(id);
         const professor = await prisma.professor.update({
             where: {
-                professor_id: professorId,
+                id: professorId,
             },
             data: {
                 courses_taught: {

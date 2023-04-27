@@ -1,4 +1,4 @@
-import { Professor, Student } from "./";
+import { Professor, Student } from ".";
 
 export interface Course {
     course_id: number;

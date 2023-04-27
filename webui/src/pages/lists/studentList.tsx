@@ -23,7 +23,7 @@ const ClassList: React.FC<Students> = (students) => {
             <Typography>Students</Typography>
             <Stack direction="column">
                 {students.studentList.map((student) => (
-                    <div key={student.student_id.toString()}>
+                    <div key={student.id.toString()}>
                         <StudentList student={student}/>
                     </div>
                 ))}

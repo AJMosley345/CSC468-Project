@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
       const student = await prisma.student.findUnique({
         where: {
-          student_id: studentId,
+          id: studentId,
         },
         include: {
           courses_taken: true

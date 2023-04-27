@@ -11,7 +11,7 @@ const Student: React.FC<{ student: Student }> = ({ student }) => {
       <Typography>{student.username}: {student.fullName}</Typography>
       <Button
         variant="contained"
-        onClick={() => router.push(`/student/${student.student_id}`)}
+        onClick={() => router.push(`/student/${student.id}`)}
       >
         Profile
       </Button>

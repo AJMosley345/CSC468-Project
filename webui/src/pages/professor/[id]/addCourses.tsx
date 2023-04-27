@@ -1,5 +1,5 @@
 import React from "react";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import {
@@ -15,10 +15,13 @@ import { prisma } from "../../../../lib/db";
 import { Course, Professor } from "../../../../interfaces";
 
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-    const professor = await prisma.professor.findUnique({
+export const getServerSideProps = async (
+    context: GetServerSidePropsContext,
+) => {
+    const id = context.params?.id;
+    const professor = await prisma.professor.findFirst({
         where: {
-            professor_id: Number(params?.id),
+            id: Number(id)
         },
         include: {
             courses_taught: true,
@@ -29,15 +32,14 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     };
 };
 
+type ServerSideProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+
 const AddCourses = ({ professor }: { professor: Professor }) => {
     const router = useRouter();
     const [courses, setCourses] = useState<Course[]>([]);
     const [selectedCourse, setSelectedCourse] = useState<number[]>([]);;
     const { id } = router.query;
-
-    const handleSelectCourse = (event: React.ChangeEvent<{ value: number[] }> ) => {
-        setSelectedCourse(event.target.value as number[]);
-    }
 
     const handleAddCourses = async () => {
         try {
@@ -76,7 +78,7 @@ const AddCourses = ({ professor }: { professor: Professor }) => {
         <Container>
             <Stack direction="column" >
                 <FormControl sx={{width: 200}}>
-                    <Select value={selectedCourse} onChange={handleSelectCourse}>
+                    <Select value={selectedCourse} onChange={ (event) => setSelectedCourse(event.target.value as number[])}>
                         <MenuItem defaultValue="Select a Course">Select a Course</MenuItem>
                         {courses.map((course) => (
                             <MenuItem key={course.course_id} value={course.course_id} >

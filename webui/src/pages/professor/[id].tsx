@@ -1,14 +1,17 @@
 import React from "react";
 import { Professor } from "../../../interfaces";
 import { prisma } from "../../../lib/db";
-import { GetServerSideProps } from "next";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { Button, Stack, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-    const professor = await prisma.professor.findUnique({
+export const getServerSideProps = async (
+    context: GetServerSidePropsContext,
+) => {
+    const id = context.params?.id;
+    const professor = await prisma.professor.findFirst({
         where: {
-            professor_id: Number(params?.id),
+            id: Number(id)
         },
         include: {
             courses_taught: true,
@@ -18,6 +21,9 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
         props: professor,
     };
 };
+
+type ServerSideProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+
 
 const ProfessorInfo: React.FC<Professor> = (props) => {
     let fullName = props.fullName;
@@ -41,7 +47,7 @@ const ProfessorInfo: React.FC<Professor> = (props) => {
                 variant="contained" 
                 onClick={() => 
                 router.push(
-                    `/professor/${props.professor_id.toString()}/addCourses`
+                    `/professor/${props.id.toString()}/addCourses`
                 )}
             >
                 Add Courses
@@ -50,7 +56,7 @@ const ProfessorInfo: React.FC<Professor> = (props) => {
                 variant="contained" 
                 onClick={() => 
                 router.push(
-                    `/professor/${props.professor_id.toString()}/dropCourses`
+                    `/professor/${props.id.toString()}/dropCourses`
                 )}
             >
                 Drop Courses
