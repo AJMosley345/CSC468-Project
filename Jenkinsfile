@@ -14,11 +14,7 @@ pipeline {
         }
         stage('Deploy'){
             sh 'namespaceStatus=$(kubectl get namespaces project -o json | jq .status.phase -r)'
-            sh 'if [ $namespaceStatus == "Active" ]
-                then
-                    echo "Namespace project exists, need to clean up"
-                    kubectl delete namespaces project
-                fi'
+            sh 'if [ $namespaceStatus == "Active" ] then echo "Namespace project exists, need to clean up" kubectl delete namespaces project fi'
             sh 'kubectl create namespace project'
             sh 'kubectl create configMap mysql-init-script --from-file=./webui-db/database/init.sql'
             sh 'kubectl create -f project-deployment.yaml --namespace project'
