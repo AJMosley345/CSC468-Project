@@ -106,6 +106,7 @@ spec:
       - name: startup-script
         configMap:
           name: webui-startup-script
+          defaultMode: 0744
         
         # command:
         # - /bin/sh
