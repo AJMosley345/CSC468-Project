@@ -1,7 +1,7 @@
 apiVersion: v1 
 kind: Service 
 metadata:  
-  name: mysql-service
+  name: db-service
 spec:  
   type: ClusterIP
   ports:
@@ -9,7 +9,7 @@ spec:
       protocol: TCP
       targetPort: 3306
   selector:    
-      app: mysql
+      app: db
 ---
 apiVersion: v1
 kind: Service
@@ -43,19 +43,19 @@ spec:
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql
+  name: db
 spec:
   selector:
     matchLabels:
-      app: mysql
+      app: db
   replicas: 1
   template:
     metadata:
       labels:
-        app: mysql
+        app: db
     spec:
       containers:
-      - name: mysql
+      - name: db
         image: mysql:latest
         env:
         - name: MYSQL_ROOT_PASSWORD
@@ -64,15 +64,7 @@ spec:
           value: "project"
         ports:
         - containerPort: 3306
-          name: mysql
-        volumeMounts:
-        - name: init-script
-          mountPath: /docker-entrypoint-initdb.d/init.sql
-          subPath: init.sql
-      volumes:
-      - name: init-script
-        configMap:
-          name: mysql-init-script
+          name: db
   strategy:
     type: Recreate
 ---
@@ -108,37 +100,6 @@ spec:
         configMap:
           name: startup
           defaultMode: 0744
-
-# ---
-# apiVersion: v1
-# kind: Pod
-# metadata:
-#   name: webui
-#   labels:
-#     name: webui
-# spec:
-#   containers:
-#   - name: webui
-#     image: ajmosley345/468-project:webui
-#     resources:
-#       limits:
-#         memory: "128Mi"
-#         cpu: "500m"
-#     env:
-#     - name: DATABASE_URL
-#       value: mysql://remote:test1234@mysql-service:3306/project?schema=public
-#     ports:
-#       - containerPort: 3000
-#     command: ["/bin/sh"]
-#     args: ["-c", "/scripts/startup.sh"]
-#     volumeMounts:
-#     - name: startup
-#       mountPath: /scripts
-# volumes:
-# - name: startup
-#   configMap:
-#     name: startup
-#     defaultMode: 0744
 ---
 apiVersion: apps/v1
 kind: Deployment
