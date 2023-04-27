@@ -1,9 +1,9 @@
 import { GetStaticProps } from "next";
-import { Course } from "../../webui-db/webui/interfaces";
+import { Course } from "../interfaces";
 import React from "react";
 import { Stack, Typography } from "@mui/material";
-import { prisma } from "../../webui-db/webui/lib/db";
-import CourseList from "../../webui-db/webui/components/CourseList";
+import { prisma } from "../../lib/db";
+import CourseList from "../components/CourseList";
 
 export const getStaticProps: GetStaticProps = async () => {
     const courseList = await prisma.courses.findMany();

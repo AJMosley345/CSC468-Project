@@ -34,7 +34,7 @@ metadata:
     app: webui
 spec:
   ports:
-    - name: "3000"
+    - name: webui
       port: 3000
       targetPort: 3000
   selector:
@@ -64,6 +64,7 @@ spec:
           value: "project"
         ports:
         - containerPort: 3306
+          targetPort: 3306
           name: mysql
         volumeMounts:
         - name: init-script
