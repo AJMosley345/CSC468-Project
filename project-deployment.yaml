@@ -7,7 +7,7 @@ spec:
   ports:
     - port: 3306
       protocol: TCP
-      targetPort: mysql
+      targetPort: 3306
   selector:    
       app: mysql
 ---
@@ -93,10 +93,11 @@ spec:
       containers:
       - name: webui
         image: ajmosley345/468-project:webui
-        command: ["/scripts/startup.sh"]
+        command: ["/bin/sh"]
+        args: ["/scripts/startup.sh"]
         env:
         - name: DATABASE_URL
-          value: mysql://remote:test1234@db:3306/project?schema=public
+          value: mysql://remote:test1234@mysql-service:3306/project?schema=public
         ports:
         - containerPort: 3000
         volumeMounts:
@@ -107,11 +108,6 @@ spec:
         configMap:
           name: startup
           defaultMode: 0744
-        
-        # command:
-        # - /bin/sh
-        # - -c
-        # - "sleep 10 && npx prisma db push --accept-data-loss && npx prisma db seed && yarn run dev"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -132,10 +128,3 @@ spec:
         image: ajmosley345/468-project:webserver
         ports:
         - containerPort: 80
-        readinessProbe:
-          httpGet:
-            path: /healthz
-            port: 80
-          initialDelaySeconds: 10
-          periodSeconds: 10
-          timeoutSeconds: 5

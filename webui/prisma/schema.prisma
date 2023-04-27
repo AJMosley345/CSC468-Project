@@ -30,7 +30,3 @@ model Student {
   fullName      String?   @db.VarChar(250)
   courses_taken Courses[]
 }
-
-// model meetings {
-//   meeting_id Int @id @default(autoincrement())
-// }
