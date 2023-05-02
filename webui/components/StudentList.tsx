@@ -8,7 +8,7 @@ const Student: React.FC<{ student: Student }> = ({ student }) => {
 
   return (
     <>
-      <Typography>{student.username}: {student.fullName}</Typography>
+      <Typography>{student.full_name}</Typography>
       <Button
         variant="contained"
         onClick={() => router.push(`/student/${student.id}`)}

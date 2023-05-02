@@ -3,23 +3,23 @@ import { prisma } from "../lib/db";
 
 const professors = await prisma.$executeRaw`
     INSERT INTO
-        Professor (username, pass, fullName)
+        Professor (username, pass, full_name)
     VALUES
-        (${"TProfessor"}, ${"Z14VdAlyK"}, ${"Test Professor"}),
-        (${"TProfessor2"}, ${"9fbzmBWeL"}, ${"Test Professor2"}),
-        (${"TProfessor3"}, ${"XS98PtClR"}, ${"Test Professor3"}),
-        (${"TProfessor4"}, ${"XqetLj4bO"}, ${"Test Professor4"});
+        (${"rburns"}, ${"Z14VdAlyK"}, ${"Richard Burns"}),
+        (${"lngo"}, ${"9fbzmBWeL"}, ${"Linh Ngo"}),
+        (${"schen"}, ${"XS98PtClR"}, ${"Si Chen"}),
+        (${"cyang"}, ${"XqetLj4bO"}, ${"Cheer-sun Yang"});
 `
 
 const students = await prisma.$executeRaw`
     INSERT INTO 
-    Student (username, pass, fullName)
+    Student (username, pass, full_name)
     VALUES 
-        (${"AM01"}, ${"J98xWOEEo"}, ${"Anthony Mosley"}),
-        (${"AZ02"}, ${"oAm1yI8SQ"}, ${"Aroum Zombra"}),
-        (${"MB03"}, ${"4aPJACpup"}, ${"Michael Burns"}),
-        (${"JH04"}, ${"bVYFdjWB3"}, ${"Joey Haywood"}),
-        (${"HK05"}, ${"4W6l9q9w3"}, ${"Hayden Kanak"});
+        (${"amosley"}, ${"J98xWOEEo"}, ${"Anthony Mosley"}),
+        (${"azombra"}, ${"oAm1yI8SQ"}, ${"Aroum Zombra"}),
+        (${"mburns"}, ${"4aPJACpup"}, ${"Michael Burns"}),
+        (${"jhaywood"}, ${"bVYFdjWB3"}, ${"Joey Haywood"}),
+        (${"hkanak"}, ${"4W6l9q9w3"}, ${"Hayden Kanak"});
 `
 
 const courses = await prisma.$executeRaw`
