@@ -1,68 +1,74 @@
 import React from "react";
 import { Student } from "../../../interfaces";
 import { prisma } from "../../../lib/db";
-import { GetServerSideProps } from "next";
-import { Box, Button, Divider, Stack, Typography } from "@mui/material";
+import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { Box, Button, Card, CardContent, Divider, Stack, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps = async (
+    context: GetServerSidePropsContext,
+) => {
+    const id = context.params?.id;
     const student = await prisma.student.findUnique({
         where: {
-            student_id: Number(params?.id),
+            id: Number(id)
         },
         include: {
             courses_taken: {
-                include:{
-                    taught_by: true
+                include: {
+                    taught_by: true,
                 }
             }
         }
     });
     return {
-        props: {
-            student,
-        }
+        props: student,
     };
 };
 
-
-
-const StudentInfo: React.FC<{ student: Student }> = ({ student }) => {
-    let fullName = student.fullName;
-    let username = student.username;
-    let courses_taken = student.courses_taken;
+const StudentInfo: React.FC<Student> = (props) => {
+    let fullName = props.full_name;
+    let username = props.username;
+    let courses_taken = props.courses_taken;
     const router = useRouter();
 
     return(
         <>
-            <Stack>
-                <Typography>{fullName}</Typography>
-                <Typography>{username}</Typography>
-                <Typography>Class Schedule: </Typography>
-                <Stack spacing={2} sx={{ display: 'flex', flexDirection: 'column', my: 2 }}>
-                    {courses_taken && courses_taken.map((course) =>(
-                        <Box sx={{ display: 'flex', flexDirection: 'column', border: 1, maxWidth: 250 }}>
-                            <div key={course.course_id}>
-                                <Typography>{course.course_number}</Typography>
-                                <Typography>{course.course_name}</Typography>
-                                {course.taught_by.map((professor) => (
-                                    <Typography key={professor.professor_id} component="span">
-                                        {professor.fullName}
+        <Typography variant="h3">Student Profile</Typography>
+            <>
+                <Typography variant="h5">{fullName}</Typography>
+                <Typography variant="h5">{username}</Typography>
+                <Divider />
+                <Typography variant="h4">Class Schedule </Typography>
+                <Stack spacing={2} direction="row" alignItems="space-evenly" mb={3}>   
+                    {courses_taken.map((course) => (
+                        <div key={course.course_id}>
+                            <Card sx={{ maxWidth: 400 }} style={{ backgroundColor: '#527bc4'}} variant="outlined" >
+                                <CardContent sx={{ color: 'whitesmoke' }}>
+                                    <Typography variant="h4">
+                                        {course.course_number}
                                     </Typography>
-                                ))}
-                            <Divider />    
-                            </div>
-                        </Box>
+                                    <Typography variant="h5">
+                                        {course.course_name}
+                                    </Typography>
+                                    {course.taught_by?.map((professor) => (
+                                        <Typography key={professor.id} variant="h5">
+                                            {professor.full_name}
+                                        </Typography>
+                                    ))}
+                                </CardContent>
+                            </Card>
+                        </div>
                     ))}
                 </Stack>
-            </Stack>
+            </>
             <Button 
                 variant="contained" 
                 onClick={() => 
                 router.push(
-                    `/student/${student.student_id.toString()}/addCourses`
+                    `/student/${props.id.toString()}/addCourses`
                 )}
-                
+                style={{ backgroundColor: '#527bc4'}}
             >
                 Add Courses
             </Button>
@@ -70,8 +76,9 @@ const StudentInfo: React.FC<{ student: Student }> = ({ student }) => {
                 variant="contained" 
                 onClick={() => 
                 router.push(
-                    `/student/${student.student_id.toString()}/dropCourses`
+                    `/student/${props.id.toString()}/dropCourses`
                 )}
+                style={{ backgroundColor: '#527bc4'}}
                 sx={{ mx: 2 }}
             >
                 Drop Courses

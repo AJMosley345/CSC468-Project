@@ -4,33 +4,30 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  //"mysql://root:test1234@mysql-service:3306/project"
+  url      = "mysql://root:test1234@db-service:3306/project"
 }
 
 model Courses {
-  course_id         Int                 @id @default(autoincrement()) @unique
-  course_number     String?             @db.VarChar(250)
-  course_name       String?             @db.VarChar(250)
-  taught_by         Professor[]    
-  taken_by          Student[]           
+  course_id     Int         @id @unique @default(autoincrement())
+  course_number String     @db.VarChar(250)
+  course_name   String     @db.VarChar(250)
+  taught_by     Professor[]
+  taken_by      Student[]
 }
 
 model Professor {
-  professor_id      Int                 @id @default(autoincrement()) @unique
-  username          String?             @db.VarChar(250) @unique
-  pass              String?             @db.VarChar(250)
-  fullName          String?             @db.VarChar(250)
-  courses_taught    Courses[]
+  id             Int       @id @unique @default(autoincrement())
+  username       String   @unique @db.VarChar(250)
+  pass           String   @unique @db.VarChar(250)
+  full_name      String   @db.VarChar(250)
+  courses_taught Courses[]
 }
 
 model Student {
-  student_id      Int               @id @default(autoincrement()) @unique
-  username        String?           @db.VarChar(250) @unique
-  pass            String?           @db.VarChar(250)
-  fullName        String?           @db.VarChar(250)
-  courses_taken  Courses[]
-}
-
-model meetings {
-  meeting_id Int @id @default(autoincrement())
+  id            Int       @id @unique @default(autoincrement())
+  username      String   @unique @db.VarChar(250)
+  pass          String   @unique @db.VarChar(250)
+  full_name      String   @db.VarChar(250)
+  courses_taken Courses[]
 }

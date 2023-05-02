@@ -1,5 +1,5 @@
 import React from "react";
-import { GetServerSideProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/router';
 import {
@@ -15,10 +15,13 @@ import { prisma } from "../../../../lib/db";
 import { Course, Student } from "../../../../interfaces";
 
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-    const student = await prisma.student.findUnique({
+export const getServerSideProps = async (
+    context: GetServerSidePropsContext,
+) => {
+    const id = context.params?.id;
+    const student = await prisma.student.findFirst({
         where: {
-            student_id: Number(params?.id),
+            id: Number(id)
         },
         include: {
             courses_taken: true,
@@ -28,6 +31,9 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
         props: student,
     };
 };
+
+type ServerSideProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+
 
 const AddCourses = ({ student }: { student: Student }) => {
     const router = useRouter();
@@ -76,7 +82,7 @@ const AddCourses = ({ student }: { student: Student }) => {
         <Container>
             <Stack direction="column" >
                 <FormControl sx={{width: 200}}>
-                    <Select value={selectedCourse} onChange={handleSelectCourse}>
+                    <Select value={selectedCourse} onChange={(event) => setSelectedCourse(event.target.value as number[])}>
                         <MenuItem defaultValue="Select a Course">Select a Course</MenuItem>
                         {courses.map((course) => (
                             <MenuItem key={course.course_id} value={course.course_id} >

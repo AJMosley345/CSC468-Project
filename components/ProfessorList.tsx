@@ -8,8 +8,8 @@ const ProfessorList: React.FC<{ professor: Professor }> = ({ professor }) => {
 
     return(
         <>
-            <Typography>{professor.username}: {professor.fullName}</Typography>
-            <Button variant="contained" onClick={()=> router.push(`/professor/${professor.professor_id}`)}>Profile</Button>
+            <Typography>{professor.full_name}</Typography>
+            <Button variant="contained" onClick={()=> router.push(`/professor/${professor.id}`)}>Profile</Button>
         </>
     )
 }

@@ -1,97 +1,119 @@
-import React from "react";
-import { GetServerSideProps } from "next";
-import { useState, useEffect } from "react";
-import { useRouter } from 'next/router';
+import React, { useState, useEffect } from "react";
+import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { useRouter } from "next/router";
 import {
-    FormControl,
-    Select,
-    MenuItem,
-    Button,
-    Typography,
-    Stack,
-    Container
+  Button,
+  Container,
+  FormControl,
+  MenuItem,
+  Select,
+  Stack,
+  Typography,
 } from "@mui/material";
 import { prisma } from "../../../../lib/db";
-import { StudentProps } from "../../../../components/StudentList";
+import { Course, Student } from "../../../../interfaces";
 
-
-
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-    const student = await prisma.student.findUnique({
-        where: {
-            student_id: Number(params?.id),
-        },
-        include: {
-            courses_taken: true,
-        }
-    });
-    return {
-        props: student,
-    };
+export const getServerSideProps: GetServerSideProps = async (
+  context: GetServerSidePropsContext
+) => {
+  const id = context.params?.id;
+  const student = await prisma.student.findFirst({
+    where: {
+      id: Number(id),
+    },
+    include: {
+      courses_taken: true,
+    },
+  });
+  const courses = await prisma.courses.findMany();
+  return {
+    props: { student, courses },
+  };
 };
 
-const AddCourses : React.FC<StudentProps> = (props) => {
-    let courses_taken = props.courses_taken;
-    const router = useRouter();
-    const [selectedCourse, setSelectedCourse] = useState<number[]>([]);;
-    const { id } = router.query;
+type ServerSideProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-    const handleSelectCourse = (event: React.ChangeEvent<{ value: number[] }> ) => {
-        setSelectedCourse(event.target.value as number[]);
+const DropCourses = ({
+  student,
+  courses,
+}: {
+  student: Student;
+  courses: Course[];
+}) => {
+  const router = useRouter();
+  const [selectedCourse, setSelectedCourse] = useState<number>(0);
+
+  const handleSelectCourse = (
+    event: React.ChangeEvent<{ value: number }>
+  ) => {
+    setSelectedCourse(event.target.value);
+  };
+
+  const handleDropCourses = async () => {
+    try {
+      const res = await fetch(`/api/student/${student.id}/dropCourses`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          courseId: selectedCourse,
+        }),
+      });
+      setSelectedCourse(0);
+      router.push(`/student/${student.id}`);
+    } catch (error) {
+      console.error(error);
     }
+  };
+  const currentCourses = student.courses_taken.map((course) => course.course_id);
+  const filteredCourses = courses.filter((course) => currentCourses.includes(course.course_id));
+  
+  return (
+    <Container>
+      <Stack direction="column">
+        <Typography variant="h4">Drop Courses</Typography>
+        <FormControl sx={{ width: 200 }}>
+          <Select
+            value={selectedCourse.toString()}
+            onChange={handleSelectCourse}
+            defaultValue="Select a Course"
+          >
+            <MenuItem disabled value="Select a Course">
+              Select a Course
+            </MenuItem>
+            {filteredCourses.map((course) => (
+              <MenuItem key={course.course_id} value={course.course_id}>
+                {course.course_name}
+              </MenuItem>
+            ))}
+            {/* {courses.map((course) => (
+              <MenuItem key={course.course_id} value={course.course_id}>
+                {course.course_name}
+              </MenuItem>
+            ))} */}
+          </Select>
+        </FormControl>
+        <Button
+          variant="contained"
+          color="primary"
+          disabled={!selectedCourse}
+          onClick={handleDropCourses}
+          sx={{ width: 150 }}
+        >
+          Drop Course
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => router.push(`/student/${student.id}`)}
+          sx={{ maxWidth: 200 }}
+        >
+          Back to Profile
+        </Button>
+      </Stack>
+    </Container>
+  );
+};
 
-    const handleDeleteCourses = async () => {
-        try {
-            const res = await fetch(`/api/student/${id}/dropCourses`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    studentId: Number(id),
-                    courseId: selectedCourse
-                }),
-            });
-            setSelectedCourse([]);
-            router.push(`/student/${id}`);
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    return(
-        <Container>
-            <Stack direction="column" >
-                <FormControl sx={{width: 200}}>
-                    <Select value={selectedCourse} onChange={handleSelectCourse}>
-                        <MenuItem defaultValue="Select a Course">Select a Course</MenuItem>
-                        {courses_taken.map((course) => (
-                            <MenuItem key={course.course_id} value={course.course_id} >
-                                {course.course_name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    disabled={!selectedCourse}
-                    onClick={handleDeleteCourses}
-                    sx={{width: 150}}
-                >
-                    Drop Course
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    onClick={() => router.push(`/student/${id}`)}
-                    sx={{ maxWidth: 200 }}
-                >
-                    Back to Profile
-                </Button>
-            </Stack>
-        </Container>
-    )
-}
-
-export default AddCourses;
+export default DropCourses;

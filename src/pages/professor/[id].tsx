@@ -1,17 +1,24 @@
 import React from "react";
 import { Professor } from "../../../interfaces";
 import { prisma } from "../../../lib/db";
-import { GetServerSideProps } from "next";
-import { Button, Stack, Typography } from "@mui/material";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { Box, Button, Card, CardContent, Divider, Stack, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-    const professor = await prisma.professor.findUnique({
+export const getServerSideProps = async (
+    context: GetServerSidePropsContext,
+) => {
+    const id = context.params?.id;
+    const professor = await prisma.professor.findFirst({
         where: {
-            professor_id: Number(params?.id),
+            id: Number(id)
         },
         include: {
-            courses_taught: true,
+            courses_taught: {
+                include: {
+                    taken_by: true,
+                }
+            }
         }
     });
     return {
@@ -19,29 +26,51 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     };
 };
 
+type ServerSideProps = InferGetServerSidePropsType<typeof getServerSideProps>;
+
 const ProfessorInfo: React.FC<Professor> = (props) => {
-    let fullName = props.fullName;
+    let fullName = props.full_name;
     let username = props.username;
     let taught_courses = props.courses_taught;
     const router = useRouter();
 
     return(
         <>
-            <Stack>
-                <Typography>{fullName}</Typography>
-                <Typography>{username}</Typography>
-                <Typography>Class Schedule</Typography>
-                {taught_courses && taught_courses.map((course) => 
-                    <>
-                        <Typography>{course.course_number}: {course.course_name}</Typography>
-                    </>
-                )}
-            </Stack>
+        <Typography>Professor Profile</Typography>
+        <>
+                <Typography variant="h5">{fullName}</Typography>
+                <Typography variant="h5">{username}</Typography>
+                <Divider />
+                <Typography variant="h4">Class Schedule </Typography>
+                <Stack spacing={2} direction="row" alignItems="space-evenly" mb={3}>   
+                    {taught_courses.map((course) => (
+                        <div key={course.course_id}>
+                            <Card sx={{ maxWidth: 400 }} style={{ backgroundColor: '#527bc4'}} variant="outlined" >
+                                <CardContent sx={{ color: 'whitesmoke' }}>
+                                    <Typography variant="h4">
+                                        {course.course_number}
+                                    </Typography>
+                                    <Typography variant="h5">
+                                        {course.course_name}
+                                    </Typography>
+                                    <Divider />
+                                    <Typography variant="h4">Roster:</Typography>
+                                    {course.taken_by?.map((student) => (
+                                        <Typography key={student.id} variant="h6">
+                                            {student.full_name}
+                                        </Typography>
+                                    ))}
+                                </CardContent>
+                            </Card>
+                        </div>
+                    ))}
+                </Stack>
+            </>
             <Button 
                 variant="contained" 
                 onClick={() => 
                 router.push(
-                    `/professor/${props.professor_id.toString()}/addCourses`
+                    `/professor/${props.id.toString()}/addCourses`
                 )}
             >
                 Add Courses
@@ -50,7 +79,7 @@ const ProfessorInfo: React.FC<Professor> = (props) => {
                 variant="contained" 
                 onClick={() => 
                 router.push(
-                    `/professor/${props.professor_id.toString()}/dropCourses`
+                    `/professor/${props.id.toString()}/dropCourses`
                 )}
             >
                 Drop Courses
