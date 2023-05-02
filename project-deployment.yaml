@@ -10,21 +10,21 @@ spec:
       targetPort: 3306
   selector:    
       app: db
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: webserver-service
-  labels:
-    app: webserver
-spec:
-  type: NodePort
-  ports:
-  - port: 80
-    targetPort: 80
-    nodePort: 30090
-  selector:
-    app: webserver
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: webserver-service
+#   labels:
+#     app: webserver
+# spec:
+#   type: NodePort
+#   ports:
+#   - port: 80
+#     targetPort: 80
+#     nodePort: 30090
+#   selector:
+#     app: webserver
 ---
 apiVersion: v1
 kind: Service
@@ -33,10 +33,12 @@ metadata:
   labels:
     app: webui
 spec:
+  type: NodePort
   ports:
     - name: webui
-      port: 3000
-      targetPort: 3000
+      port: 3001
+      targetPort: 3001
+      nodePort: 30090
   selector:
     app: webui
 ---
@@ -87,36 +89,33 @@ spec:
         image: ajmosley345/468-project:webui
         command: ["/bin/sh"]
         args: ["/scripts/startup.sh"]
-        # env:
-        # - name: DATABASE_URL
-        #   value: mysql://remote:test1234@mysql-service:3306/project
         ports:
-        - containerPort: 3000
+        - containerPort: 3001
         volumeMounts:
         - name: startup
-          mountPath: /scripts
+          mountPath: /scripts/
       volumes:
       - name: startup
         configMap:
           name: startup
           defaultMode: 0744
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: webserver
-spec:
-  selector:
-    matchLabels:
-      app: webserver
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        app: webserver
-    spec:
-      containers:
-      - name: webserver
-        image: ajmosley345/468-project:webserver
-        ports:
-        - containerPort: 80
+# ---
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: webserver
+# spec:
+#   selector:
+#     matchLabels:
+#       app: webserver
+#   replicas: 1
+#   template:
+#     metadata:
+#       labels:
+#         app: webserver
+#     spec:
+#       containers:
+#       - name: webserver
+#         image: ajmosley345/468-project:webserver
+#         ports:
+#         - containerPort: 80
