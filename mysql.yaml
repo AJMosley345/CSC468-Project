@@ -23,13 +23,13 @@ spec:
         ports:
         - containerPort: 3306
           name: mysql
-        volumeMounts:
-        - name: init-script
-          mountPath: /docker-entrypoint-initdb.d/init.sql
-          subPath: init.sql
-      volumes:
-      - name: init-script
-        configMap:
-          name: mysql-init-script
+      #   volumeMounts:
+      #   - name: init-script
+      #     mountPath: /docker-entrypoint-initdb.d/init.sql
+      #     subPath: init.sql
+      # volumes:
+      # - name: init-script
+      #   configMap:
+      #     name: mysql-init-script
   strategy:
     type: Recreate
