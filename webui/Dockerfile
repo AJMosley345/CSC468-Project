@@ -1,20 +1,27 @@
-FROM node:18-alpine AS builder
-RUN apk add --no-cache libc6-compat
+FROM node:18-alpine AS dependencies
+
 WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn
+
+FROM node:18-alpine AS build
+
+WORKDIR /app
+COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
-ENV NEXT_TELEMETRY_DISABLED 1
-RUN npx prisma migrate deploy
+
 RUN npx prisma generate
 RUN yarn build
-RUN mkdir -p /app/.next/cache/images
 
-# Production image, copy all the files and run next
-FROM node:18-alpine AS runner
+FROM node:18-alpine AS deploy
+
 WORKDIR /app
-ENV NODE_ENV production
-ENV NEXT_TELEMETRY_DISABLED 1
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
-COPY --chown=nextjs:nodejs --from=builder /app/ ./
-USER nextjs
 
+ENV NODE_ENV production
+
+COPY --from=build /app/public ./public
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/static ./.next/static
+
+EXPOSE 3000

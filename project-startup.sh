@@ -16,9 +16,6 @@ kubectl create configmap startup --from-file=./webui/startup.sh -n project
 echo "Creating pods and services"
 kubectl create -f db-deployment.yaml -n project
 
-docker-compose -f docker-compose.images.yml build
-docker-compose -f docker-compose.images.yml push
-
 sleep 20
 
 kubectl create -f webui-deployment.yaml -n project
