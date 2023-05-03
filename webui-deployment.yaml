@@ -33,6 +33,9 @@ spec:
         image: ajmosley345/468-project:webui
         command: ["/bin/sh"]
         args: ["/scripts/startup.sh"]
+        env:
+          - name: DATABASE_URL
+            value: "mysql://root:test1234@localhost:3306/project?schema=public"
         ports:
         - containerPort: 3001
         volumeMounts:

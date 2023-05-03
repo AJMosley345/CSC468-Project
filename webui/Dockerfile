@@ -1,4 +1,4 @@
-FROM node:18 AS dependencies
+FROM node:latest AS dependencies
 
 WORKDIR /app
 COPY package.json yarn.lock ./
@@ -16,7 +16,7 @@ ENV NEXT_PRIVATE_STANDALONE true
 RUN npx prisma generate
 RUN yarn build
 
-FROM node:18-alpine AS deploy
+FROM node:latest AS deploy
 
 WORKDIR /app
 
