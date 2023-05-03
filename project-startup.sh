@@ -1,9 +1,8 @@
 #!/bin/bash
 set -x
 
-docker-compose -f docker-compose.images.yml build
-docker-compose -f docker-compose.images.yml push
-
+# docker-compose -f docker-compose.images.yml build
+# docker-compose -f docker-compose.images.yml push
 namespaceStatus=$(kubectl get namespaces project -o json | jq .status.phase -r)
 
 if [ $namespaceStatus == "Active" ]
