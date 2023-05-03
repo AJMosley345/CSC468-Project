@@ -13,9 +13,9 @@ then
 
 echo "Creating namespace project"
 kubectl create namespace project
-kubectl create configmap startup --from-file=./webui/startup.sh
+kubectl create configmap startup --from-file=./webui/startup.sh -n project
 
 echo "Creating pods and services"
-kubectl create -f project-deployment.yaml
+kubectl create -f project-deployment.yaml -n project
 
 kubectl get pods -n project
