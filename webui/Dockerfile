@@ -1,7 +1,6 @@
 FROM node:18-alpine AS dependencies
 
 WORKDIR /app
-RUN yarn add next
 COPY package.json yarn.lock ./
 RUN yarn
 
