@@ -31,7 +31,7 @@ spec:
       containers:
       - name: webui
         image: ajmosley345/468-project:webui
-        command: ["/bin/sh"]
+        command: ["/bin/bash"]
         args: ["/scripts/startup.sh"]
         ports:
         - containerPort: 3001
