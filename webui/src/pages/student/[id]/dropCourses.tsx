@@ -41,13 +41,13 @@ const DropCourses = ({
   courses: Course[];
 }) => {
   const router = useRouter();
-  const [selectedCourse, setSelectedCourse] = useState<number>(0);
+  const [selectedCourse, setSelectedCourse] = useState<number[]>([]);
 
-  const handleSelectCourse = (
-    event: React.ChangeEvent<{ value: number }>
-  ) => {
-    setSelectedCourse(event.target.value);
-  };
+  // const handleSelectCourse = (
+  //   event: React.ChangeEvent<{ value: number }>
+  // ) => {
+  //   setSelectedCourse(event.target.value);
+  // };
 
   const handleDropCourses = async () => {
     try {
@@ -60,7 +60,7 @@ const DropCourses = ({
           courseId: selectedCourse,
         }),
       });
-      setSelectedCourse(0);
+      setSelectedCourse([]);
       router.push(`/student/${student.id}`);
     } catch (error) {
       console.error(error);
@@ -76,7 +76,7 @@ const DropCourses = ({
         <FormControl sx={{ width: 200 }}>
           <Select
             value={selectedCourse.toString()}
-            onChange={handleSelectCourse}
+            onChange={(event) => setSelectedCourse(event.target.value as unknown as number[])}
             defaultValue="Select a Course"
           >
             <MenuItem disabled value="Select a Course">
