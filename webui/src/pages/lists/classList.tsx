@@ -1,17 +1,20 @@
-import { GetStaticProps } from "next";
+import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { Course } from "../../../interfaces";
 import React from "react";
 import { Stack, Typography } from "@mui/material";
 import { prisma } from "../../../lib/db";
 import CourseList from "../../../components/CourseList";
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async (
+    context: GetServerSidePropsContext
+) => {
     const courseList = await prisma.courses.findMany();
     return {
         props: { courseList },
         revalidate: 10,
     };
 };
+type ServerSideProps = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 type Courses = {
     courseList: Course[]

@@ -1,19 +1,31 @@
-FROM node:18-alpine
-
-# Set the working directory to /app
+FROM node:18-bullseye-slim AS base
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the container's working directory
 COPY package.json yarn.lock ./
 
-# Install app dependencies
-RUN yarn install
+FROM base as build
+RUN export NODE_ENV=production
+RUN yarn
 
-# Copy the rest of the application to the container's working directory
 COPY . .
-
-# Generates the Prisma Client
 RUN npx prisma generate
+ENV NEXT_PRIVATE_STANDALONE true
+RUN yarn build
 
+FROM base as prod-build
+
+RUN yarn install --production
+COPY prisma prisma
+RUN npx prisma generate
+RUN cp -R node_modules prod_node_modules
+
+FROM base as prod
+
+COPY --from=prod-build /app/prod_node_modules /app/node_modules
+COPY --from=build  /app/prisma /app/prisma
+COPY --from=build /app/package.json ./package.json
+COPY --from=build /app/.next/standalone ./
+COPY --from=build /app/.next/static ./.next/static
+COPY --from=build /app/yarn.lock .
 # Set environment variables for the Prisma database connection
-ENV DATABASE_URL "mysql://remote:test1234@db-service:3306/project?schema=public"
+ENV DATABASE_URL "mysql://root:test1234@db-service:3306/project?schema=public"
