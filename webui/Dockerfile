@@ -1,31 +1,20 @@
-FROM node:18-alpine AS base
+FROM node:18-alpine AS builder
+RUN apk add --no-cache libc6-compat
 WORKDIR /app
-
-COPY package.json yarn.lock ./
-
-FROM base as build
-RUN export NODE_ENV=production
-RUN yarn
-
 COPY . .
+ENV NEXT_TELEMETRY_DISABLED 1
+RUN npx prisma migrate deploy
 RUN npx prisma generate
-ENV NEXT_PRIVATE_STANDALONE true
 RUN yarn build
+RUN mkdir -p /app/.next/cache/images
 
-FROM base as prod-build
+# Production image, copy all the files and run next
+FROM node:18-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV production
+ENV NEXT_TELEMETRY_DISABLED 1
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nextjs
+COPY --chown=nextjs:nodejs --from=builder /app/ ./
+USER nextjs
 
-RUN yarn install --production
-COPY prisma prisma
-RUN npx prisma generate
-RUN cp -R node_modules prod_node_modules
-
-FROM base as prod
-
-COPY --from=prod-build /app/prod_node_modules /app/node_modules
-COPY --from=build  /app/prisma /app/prisma
-COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/.next/standalone ./
-COPY --from=build /app/.next/static ./.next/static
-COPY --from=build /app/yarn.lock .
-# Set environment variables for the Prisma database connection
-ENV DATABASE_URL "mysql://root:test1234@db-service:3306/project?schema=public"

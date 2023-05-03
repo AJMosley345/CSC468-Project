@@ -8,4 +8,3 @@ yarn-error.log
 Dockerfile
 .dockerignore
 docker-compose.yml
-.env
