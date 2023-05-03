@@ -5,9 +5,3 @@ services:
       context: ./webui
       dockerfile: Dockerfile
     image: ajmosley345/468-project:webui
-
-  webserver:
-    build: 
-      context: ./webserver
-      dockerfile: Dockerfile
-    image: ajmosley345/468-project:webserver
