@@ -11,8 +11,8 @@ import {
     Stack,
     Container
 } from "@mui/material";
-import { prisma } from "../../../../lib/db";
-import { Course, Professor } from "../../../../interfaces";
+import { prisma } from "../../../lib/db";
+import { Course, Professor } from "../../../interfaces";
 
 
 export const getServerSideProps = async (

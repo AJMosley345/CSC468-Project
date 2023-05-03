@@ -4,8 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  //"mysql://root:test1234@mysql-service:3306/project"
-  url      = "mysql://root:test1234@db:3306/project"
+  url      = env("DATABASE_URL")
 }
 
 model Courses {

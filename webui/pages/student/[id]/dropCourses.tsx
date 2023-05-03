@@ -10,8 +10,8 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { prisma } from "../../../../lib/db";
-import { Course, Student } from "../../../../interfaces";
+import { prisma } from "../../../lib/db";
+import { Course, Student } from "../../../interfaces";
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext

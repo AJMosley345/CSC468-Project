@@ -1,7 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { prisma } from "../../../../lib/db";
 
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+    if (req.method !== "GET") {
+      res.status(405).json({ message: "Method not allowed" });
+      return;
+    }
+  
     const studentId = parseInt(req.query.id as string);
   
     try {
@@ -9,9 +15,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         where: {
           id: studentId,
         },
-        include: {
-          courses_taken: true
-        }
+        select: {
+          courses_taken: true,
+        },
       });
   
       if (!student) {

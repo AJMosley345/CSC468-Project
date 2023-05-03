@@ -1,7 +1,7 @@
 import React from "react";
-import { Professor } from "../../../interfaces";
-import { prisma } from "../../../lib/db";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import { Student } from "../../interfaces";
+import { prisma } from "../../lib/db";
+import { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { Box, Button, Card, CardContent, Divider, Stack, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 
@@ -9,41 +9,39 @@ export const getServerSideProps = async (
     context: GetServerSidePropsContext,
 ) => {
     const id = context.params?.id;
-    const professor = await prisma.professor.findFirst({
+    const student = await prisma.student.findUnique({
         where: {
             id: Number(id)
         },
         include: {
-            courses_taught: {
+            courses_taken: {
                 include: {
-                    taken_by: true,
+                    taught_by: true,
                 }
             }
         }
     });
     return {
-        props: professor,
+        props: student,
     };
 };
 
-type ServerSideProps = InferGetServerSidePropsType<typeof getServerSideProps>;
-
-const ProfessorInfo: React.FC<Professor> = (props) => {
+const StudentInfo: React.FC<Student> = (props) => {
     let fullName = props.full_name;
     let username = props.username;
-    let taught_courses = props.courses_taught;
+    let courses_taken = props.courses_taken;
     const router = useRouter();
 
     return(
         <>
-        <Typography>Professor Profile</Typography>
-        <>
+        <Typography variant="h3">Student Profile</Typography>
+            <>
                 <Typography variant="h5">{fullName}</Typography>
                 <Typography variant="h5">{username}</Typography>
                 <Divider />
                 <Typography variant="h4">Class Schedule </Typography>
                 <Stack spacing={2} direction="row" alignItems="space-evenly" mb={3}>   
-                    {taught_courses.map((course) => (
+                    {courses_taken.map((course) => (
                         <div key={course.course_id}>
                             <Card sx={{ maxWidth: 400 }} style={{ backgroundColor: '#527bc4'}} variant="outlined" >
                                 <CardContent sx={{ color: 'whitesmoke' }}>
@@ -53,11 +51,9 @@ const ProfessorInfo: React.FC<Professor> = (props) => {
                                     <Typography variant="h5">
                                         {course.course_name}
                                     </Typography>
-                                    <Divider />
-                                    <Typography variant="h4">Roster:</Typography>
-                                    {course.taken_by?.map((student) => (
-                                        <Typography key={student.id} variant="h6">
-                                            {student.full_name}
+                                    {course.taught_by?.map((professor) => (
+                                        <Typography key={professor.id} variant="h5">
+                                            {professor.full_name}
                                         </Typography>
                                     ))}
                                 </CardContent>
@@ -70,8 +66,9 @@ const ProfessorInfo: React.FC<Professor> = (props) => {
                 variant="contained" 
                 onClick={() => 
                 router.push(
-                    `/professor/${props.id.toString()}/addCourses`
+                    `/student/${props.id.toString()}/addCourses`
                 )}
+                style={{ backgroundColor: '#527bc4'}}
             >
                 Add Courses
             </Button>
@@ -79,8 +76,10 @@ const ProfessorInfo: React.FC<Professor> = (props) => {
                 variant="contained" 
                 onClick={() => 
                 router.push(
-                    `/professor/${props.id.toString()}/dropCourses`
+                    `/student/${props.id.toString()}/dropCourses`
                 )}
+                style={{ backgroundColor: '#527bc4'}}
+                sx={{ mx: 2 }}
             >
                 Drop Courses
             </Button>
@@ -88,4 +87,4 @@ const ProfessorInfo: React.FC<Professor> = (props) => {
     )
 }
 
-export default ProfessorInfo;
+export default StudentInfo;
