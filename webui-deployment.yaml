@@ -42,7 +42,7 @@ metadata:
   name: webui-service
 spec:
   selector:
-    app: webui-service
+    app: webui
   type: NodePort
   ports:
   - name: "3000"
