@@ -16,7 +16,7 @@ spec:
           args:
             - sh
             - -c
-            - sleep 10 && DATABASE_URL="mysql://root:test1234@db-service:3306/project?schema=public" npx prisma migrate deploy && DATABASE_URL="mysql://root:test1234@db-service:3306/project?schema=public" npx prisma db seed && yarn start
+            - sleep 10 && DATABASE_URL="mysql://root:test1234@db-service:3306/project?schema=public" npx prisma migrate deploy && yarn start
           image: ajmosley345/468-project:webui
           env:
             - name: DATABASE_URL
