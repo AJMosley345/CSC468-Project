@@ -1,26 +1,13 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.28.0 (HEAD)
-  labels:
-    io.kompose.service: webui
   name: webui
 spec:
   replicas: 1
   selector:
     matchLabels:
       io.kompose.service: webui
-  strategy: {}
   template:
-    metadata:
-      annotations:
-        kompose.cmd: kompose convert
-        kompose.version: 1.28.0 (HEAD)
-      labels:
-        io.kompose.network/main-default: "true"
-        io.kompose.service: webui
     spec:
       containers:
         - args:
@@ -42,7 +29,7 @@ metadata:
   name: webui-service
 spec:
   selector:
-    app: webui
+    app: webui-service
   type: NodePort
   ports:
   - name: "3000"
