@@ -85,7 +85,7 @@ spec:
         - args:
             - sh
             - -c
-            - cd /app  && sleep 10 && npx prisma generate && npx prisma migrate deploy && npx prisma db seed && yarn install && yarn build && yarn run dev
+            - cd /app  && sleep 10 && yarn install && npx prisma generate && npx prisma migrate deploy && npx prisma db seed && yarn build && yarn run dev
           env:
             - name: DATABASE_URL
               value: mysql://root:test1234@db-service:3306/project?schema=public
