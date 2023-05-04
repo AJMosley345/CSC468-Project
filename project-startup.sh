@@ -17,4 +17,4 @@ kubectl create -f db-deployment.yaml -n project
 sleep 30
 kubectl create -f webui-deployment.yaml -n project
 
-kubectl get pods
+kubectl get pods -n project

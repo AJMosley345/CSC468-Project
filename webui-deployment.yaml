@@ -1,40 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  annotations:
-    kompose.cmd: kompose convert
-    kompose.version: 1.28.0 (HEAD)
-  labels:
-    io.kompose.service: webui
   name: webui
 spec:
-  replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: webui
-  strategy: {}
+      app: webui
   template:
     metadata:
-      annotations:
-        kompose.cmd: kompose convert
-        kompose.version: 1.28.0 (HEAD)
       labels:
-        io.kompose.network/main-default: "true"
-        io.kompose.service: webui
+        app: webui
     spec:
       containers:
-        - args:
+        - name: webui
+          args:
             - sh
             - -c
-            - cd /app  && sleep 10 && yarn install && npx prisma generate && npx prisma migrate deploy && npx prisma db seed && yarn build && yarn start
+            - sleep 10 && DATABASE_URL="mysql://root:test1234@db-service:3306/project?schema=public" npx prisma migrate deploy && DATABASE_URL="mysql://root:test1234@db-service:3306/project?schema=public" npx prisma db seed && yarn start
+          image: ajmosley345/468-project:webui
           env:
             - name: DATABASE_URL
               value: mysql://root:test1234@db-service:3306/project?schema=public
-          image: ajmosley345/468-project:webui
-          name: webui
-          resources: {}
-      restartPolicy: Always
-status: {}
+          ports:
+            - containerPort: 3000
+
 ---
 apiVersion: v1
 kind: Service
@@ -45,8 +34,7 @@ spec:
     app: webui
   type: NodePort
   ports:
-  - name: "3000"
-    port: 3000
+  - protocol: TCP
+    port: 80
     targetPort: 3000
-    nodePort: 30092
-
+    nodePort: 30082
