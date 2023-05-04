@@ -41,28 +41,28 @@ status: {}
 apiVersion: v1
 kind: Service
 metadata:
-  name: webui
+  name: webui-service
 spec:
   selector:
     app: webui
-  type: NodePort
+  # type: NodePort
   ports:
   - name: "3000"
     port: 3000
     targetPort: 3000
-    nodePort: 30090
+    # nodePort: 30090
 
----
-apiVersion: networking.k8s.io/v1
-kind: NetworkPolicy
-metadata:
-  name: main-default
-spec:
-  ingress:
-    - from:
-        - podSelector:
-            matchLabels:
-              io.kompose.network/main-default: "true"
-  podSelector:
-    matchLabels:
-      io.kompose.network/main-default: "true"
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: NetworkPolicy
+# metadata:
+#   name: main-default
+# spec:
+#   ingress:
+#     - from:
+#         - podSelector:
+#             matchLabels:
+#               io.kompose.network/main-default: "true"
+#   podSelector:
+#     matchLabels:
+#       io.kompose.network/main-default: "true"

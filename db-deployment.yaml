@@ -44,7 +44,7 @@ metadata:
     kompose.version: 1.28.0 (HEAD)
   labels:
     io.kompose.service: db
-  name: db
+  name: db-service
 spec:
   ports:
     - name: "3306"
