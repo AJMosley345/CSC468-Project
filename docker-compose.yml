@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:latest
+    container_name: db
+    environment:
+      - MYSQL_ROOT_PASSWORD=test1234
+      - MYSQL_DATABASE=project
+    ports:
+      - '3306:3306'
+  webui:
+    image: ajmosley345/468-project:webui
+    container_name: webui
+    command: >
+      sh -c
+      "cd /app 
+      && sleep 10
+      && npx prisma generate
+      && npx prisma migrate deploy
+      && npx prisma db seed
+      && yarn build
+      && yarn run dev"
+    environment:
+      - DATABASE_URL=mysql://root:test1234@host.docker.internal:3306/project?schema=public

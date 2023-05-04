@@ -1,27 +1,18 @@
-FROM node:latest AS dependencies
+FROM node:18-alpine
 
+# Set the working directory to /app
 WORKDIR /app
+
+# Copy package.json and package-lock.json to the container's working directory
 COPY package.json yarn.lock ./
-RUN yarn
 
-FROM node:18-alpine AS build
+# Install app dependencies
+RUN yarn install
 
-WORKDIR /app
-COPY --from=dependencies /app/node_modules ./node_modules
+# Copy the rest of the application to the container's working directory
 COPY . .
 
-ENV NODE_ENV production
-ENV NEXT_PRIVATE_STANDALONE true
-
+# Generates the Prisma Client
 RUN npx prisma generate
+
 RUN yarn build
-
-FROM node:latest AS deploy
-
-WORKDIR /app
-
-ENV NODE_ENV production
-
-COPY --from=build /app/package.json ./package.json
-COPY --from=build /app/.next/standalone ./
-COPY --from=build /app/.next/static ./.next/static

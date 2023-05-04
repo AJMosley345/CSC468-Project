@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.28.0 (HEAD)
+  labels:
+    io.kompose.service: db
+  name: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: db
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.28.0 (HEAD)
+      labels:
+        io.kompose.network/main-default: "true"
+        io.kompose.service: db
+    spec:
+      containers:
+        - env:
+            - name: MYSQL_DATABASE
+              value: project
+            - name: MYSQL_ROOT_PASSWORD
+              value: test1234
+          image: mysql:latest
+          name: db
+          ports:
+            - containerPort: 3306
+          resources: {}
+      restartPolicy: Always
+status: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.28.0 (HEAD)
+  labels:
+    io.kompose.service: db
+  name: db-service
+spec:
+  ports:
+    - name: "3306"
+      port: 3306
+      targetPort: 3306
+  selector:
+    io.kompose.service: db
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.28.0 (HEAD)
+  
+  labels:
+    io.kompose.service: webui
+  name: webui
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: webui
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert
+        kompose.version: 1.28.0 (HEAD)
+      
+      labels:
+        io.kompose.network/main-default: "true"
+        io.kompose.service: webui
+    spec:
+      containers:
+        - args:
+            - sh
+            - -c
+            - cd /app  && sleep 10 && npx prisma generate && npx prisma migrate deploy && npx prisma db seed && yarn build && yarn run dev
+          env:
+            - name: DATABASE_URL
+              value: mysql://root:test1234@db-service:3306/project?schema=public
+          image: ajmosley345/468-project:webui
+          name: webui
+          resources: {}
+      restartPolicy: Always
+status: {}
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: main-default
+spec:
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              io.kompose.network/main-default: "true"
+  podSelector:
+    matchLabels:
+      io.kompose.network/main-default: "true"
