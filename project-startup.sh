@@ -16,7 +16,5 @@ echo "Creating pods and services"
 kubectl create -f db-deployment.yaml -n project
 sleep 30
 kubectl create -f webui-deployment.yaml -n project
-sleep 30
-kubectl create -f nginx-deployment.yaml -n project
 
 kubectl get pods
