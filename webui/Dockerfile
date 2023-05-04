@@ -6,13 +6,5 @@ WORKDIR /app
 # Copy package.json and package-lock.json to the container's working directory
 COPY package.json yarn.lock ./
 
-# Install app dependencies
-RUN yarn install
-
 # Copy the rest of the application to the container's working directory
 COPY . .
-
-# Generates the Prisma Client
-RUN npx prisma generate
-
-RUN yarn build
