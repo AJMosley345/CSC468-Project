@@ -23,18 +23,3 @@ spec:
               value: mysql://root:test1234@db-service:3306/project?schema=public
           ports:
             - containerPort: 3000
-
-# ---
-# apiVersion: v1
-# kind: Service
-# metadata:
-#   name: webui-service
-# spec:
-#   selector:
-#     app: webui
-#   type: NodePort
-#   ports:
-#   - protocol: TCP
-#     port: 80
-#     targetPort: 3000
-#     nodePort: 30080
