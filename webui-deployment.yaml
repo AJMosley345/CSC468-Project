@@ -16,7 +16,7 @@ spec:
           args:
             - sh
             - -c
-            - sleep 10 && cd /app && yarn install && DATABASE_URL="mysql://root:test1234@db-service:3306/project?schema=public" npx prisma migrate deploy && DATABASE_URL="mysql://root:test1234@db-service:3306/project?schema=public" npx prisma db seed && yarn start
+            - sleep 10 && cd /app && yarn install && DATABASE_URL="mysql://root:test1234@db-service:3306/project?schema=public" npx prisma migrate deploy && DATABASE_URL="mysql://root:test1234@db-service:3306/project?schema=public" npx prisma db seed && yarn build &&yarn start
           image: ajmosley345/468-project:webui
           env:
             - name: DATABASE_URL
@@ -24,17 +24,17 @@ spec:
           ports:
             - containerPort: 3000
 
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: webui-service
-spec:
-  selector:
-    app: webui
-  type: NodePort
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 3000
-    nodePort: 30080
+# ---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: webui-service
+# spec:
+#   selector:
+#     app: webui
+#   type: NodePort
+#   ports:
+#   - protocol: TCP
+#     port: 80
+#     targetPort: 3000
+#     nodePort: 30080
