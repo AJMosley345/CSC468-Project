@@ -17,7 +17,6 @@ kubectl create -f db-deployment.yaml -n project
 sleep 30
 kubectl create -f webui-deployment.yaml -n project
 sleep 30 
-kubectl create -f nginx-deployment.yaml -n project
-# kubectl expose deploy/webui --port=3000 --type=NodePort -n project
+kubectl expose deploy/webui --port=3000 --type=NodePort -n project
 
 kubectl get pods -n project
